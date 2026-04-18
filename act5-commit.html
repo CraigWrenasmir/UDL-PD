@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Act 5 — Commit + Close — Aspect Hunter School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --snes-yellow: #e8c547;
+            --amber: #c8a830;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --text-dark: #2a2a3a;
+            --text-mid: #5a5a6a;
+            --text-light: #8a8a9a;
+            --glass-bg: rgba(255,255,255,0.85);
+            --glass-border: rgba(144,144,192,0.3);
+            --glass-shadow: rgba(107,107,157,0.15);
+            --page-bg: #f6f6fb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 12%, rgba(200,168,48,0.10) 0%, transparent 50%),
+                radial-gradient(circle at 88% 80%, rgba(144,144,192,0.10) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 52px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender-deep);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-bottom: 40px;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.65; }
+
+        /* --- Page header --- */
+        .page-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--amber);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .page-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1.2rem, 3.5vw, 1.65rem);
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .page-intro {
+            max-width: 600px;
+            margin: 0 auto 48px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-mid);
+        }
+
+        .page-intro strong { color: var(--text-dark); font-weight: 600; }
+
+        /* --- Three ones --- */
+        .three-ones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        @media (max-width: 580px) {
+            .three-ones { grid-template-columns: 1fr; }
+        }
+
+        .one-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px var(--glass-shadow);
+            padding: 22px 20px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .one-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--amber);
+        }
+
+        .one-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(200,168,48,0.2);
+            line-height: 1;
+        }
+
+        .one-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .one-desc {
+            font-size: 12.5px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* --- Commitment card --- */
+        .commitment-card {
+            background: var(--text-dark);
+            border-radius: 16px;
+            padding: 32px 28px;
+            margin-bottom: 20px;
+        }
+
+        .commitment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .commitment-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .commitment-school {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+        }
+
+        .commitment-items {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .commitment-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .commitment-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .commitment-item-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--amber);
+        }
+
+        .commitment-item-prompt {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .commitment-item-note {
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.6;
+        }
+
+        /* --- Optional share --- */
+        .share-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: rgba(200,168,48,0.07);
+            border: 1px solid rgba(200,168,48,0.22);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .share-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--amber);
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .share-note p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+        }
+
+        /* --- Tools note --- */
+        .tools-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: rgba(144,144,192,0.06);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 44px;
+        }
+
+        .tools-note-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--lavender-deep);
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tools-note-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tools-note p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+        }
+
+        .tool-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--lavender-deep);
+            border-radius: 8px;
+            padding: 10px 18px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .tool-btn:hover { opacity: 0.85; }
+
+        /* --- Final closing --- */
+        .final-closing {
+            border-radius: 16px;
+            border: 1px solid rgba(200,168,48,0.3);
+            background: rgba(200,168,48,0.05);
+            padding: 36px 28px;
+            text-align: center;
+        }
+
+        .final-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 16px;
+        }
+
+        .final-q {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .final-note {
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.7;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="aspect-session-overview.html" class="back-link">← Back to session overview</a>
+
+    <!-- Page header -->
+    <p class="page-label">Act 5 — Individual → Room</p>
+    <h1 class="page-title">Commit + Close</h1>
+    <p class="page-intro">
+        Three rounds. Each one builds on the last. Start individually — then bring it to your table. <strong>You came in with a lesson. You leave with a question.</strong>
+    </p>
+
+    <!-- Timing overview -->
+    <div style="margin-bottom:24px; padding:12px 18px; background:rgba(200,168,48,0.06); border:1px solid rgba(200,168,48,0.2); border-radius:10px; font-size:12px; color:var(--text-mid); line-height:1.8; font-family:'Space Mono',monospace;">
+        <strong style="color:var(--amber); font-size:10px; letter-spacing:1px; text-transform:uppercase;">/// How we spend 30 minutes</strong><br>
+        Round 1 — Reflect: 3 min individual + 5 min table<br>
+        Round 2 — The Question: 3 min individual + 5 min table<br>
+        Round 3 — Apply It: 8 min individual<br>
+        Whole-room share: 4 min
+    </div>
+
+    <!-- Round 1 -->
+    <div class="commitment-card" style="border-left:4px solid var(--amber);">
+        <div class="commitment-header">
+            <span class="commitment-title">Round 1 — Reflect</span>
+            <span class="commitment-school">3 min individual → 5 min table</span>
+        </div>
+        <div class="commitment-items">
+            <div class="commitment-item">
+                <p class="commitment-item-prompt">One thing today has made you question about the way you currently plan or support learning.</p>
+                <p class="commitment-item-note">Think about a bias you may have about how you design or support lessons — and what you'd do differently because of it.</p>
+            </div>
+            <div class="commitment-item">
+                <p class="commitment-item-prompt">Share at your table. What did others notice that you missed?</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Round 2 -->
+    <div class="commitment-card" style="margin-top:16px; border-left:4px solid var(--amber);">
+        <div class="commitment-header">
+            <span class="commitment-title">Round 2 — The Question</span>
+            <span class="commitment-school">3 min individual → 5 min table</span>
+        </div>
+        <div class="commitment-items">
+            <div class="commitment-item">
+                <p class="commitment-item-prompt">Distil your reflection into one question you'll ask yourself before every lesson plan.</p>
+                <p class="commitment-item-note">Not a checklist item — a genuine question you don't already know the answer to.</p>
+            </div>
+            <div class="commitment-item">
+                <p class="commitment-item-prompt">Share your question with your table. They'll help you sharpen it.</p>
+                <p class="commitment-item-note">A good question names a tension. A great question makes you uncomfortable every time you ask it.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Round 3 -->
+    <div class="commitment-card" style="margin-top:16px; border-left:4px solid var(--amber);">
+        <div class="commitment-header">
+            <span class="commitment-title">Round 3 — Apply It</span>
+            <span class="commitment-school">8 min individual</span>
+        </div>
+        <div class="commitment-items">
+            <div class="commitment-item">
+                <p class="commitment-item-prompt">Take a real lesson or session you're planning next week.</p>
+                <p class="commitment-item-note">Ask your question. What changes?</p>
+            </div>
+            <div class="commitment-item">
+                <p class="commitment-item-prompt">Write one thing you'd do differently as a result.</p>
+                <p class="commitment-item-note">Something specific enough to act on. Not a principle — a change.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Whole room share -->
+    <div class="share-note" style="margin-top:24px;">
+        <span class="share-tag">Whole-room share</span>
+        <p>4 minutes. One question per table — the one you'll actually use. The question that stayed with you.</p>
+    </div>
+
+    <!-- UDL Thinking Space -->
+    <div class="tools-note" style="margin-top:20px;">
+        <span class="tools-note-tag">Keep going</span>
+        <div class="tools-note-body">
+            <p>The <a href="https://fieldnotes.theuniversalsandpit.org/udl-dashboard.html" target="_blank" rel="noopener noreferrer" style="color:var(--snes-green);text-decoration:underline;text-decoration-style:dotted;">UDL Thinking Space</a> is available if you'd like a place to keep developing your thinking after today.</p>
+            <a href="https://fieldnotes.theuniversalsandpit.org/udl-dashboard.html" target="_blank" rel="noopener noreferrer" class="tool-btn" style="background:var(--snes-green);">→ Open UDL Thinking Space</a>
+        </div>
+    </div>
+
+    <!-- Final closing -->
+    <div class="final-closing">
+        <p class="final-label">/// To close</p>
+        <p class="final-q">"You came in with a lesson. You leave with a question.<br>That question is the work continuing."</p>
+        <p class="final-note">Design is never finished. It just gets closer to the range.</p>
+    </div>
+
+    <p class="footer">/// THE UNIVERSAL SANDPIT — ASPECT HUNTER SCHOOL — APRIL 2026 ///</p>
+
+</div>
+
+</body>
+</html>

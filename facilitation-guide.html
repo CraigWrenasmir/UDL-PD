@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Facilitation Guide — Aspect Hunter School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --amber: #c8a830;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --text-dark: #2a2a3a;
+            --text-mid: #5a5a6a;
+            --text-light: #8a8a9a;
+            --glass-bg: rgba(255,255,255,0.9);
+            --glass-border: rgba(144,144,192,0.3);
+            --glass-shadow: rgba(107,107,157,0.12);
+            --page-bg: #f0f0f8;
+            --say-bg: #fffdf5;
+            --say-border: #e8c547;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 5% 5%, rgba(144,144,192,0.12) 0%, transparent 40%),
+                radial-gradient(circle at 95% 90%, rgba(144,144,192,0.08) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender-deep);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-bottom: 36px;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.65; }
+
+        /* --- Page header --- */
+        .guide-header {
+            background: var(--text-dark);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 36px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .guide-header-left {}
+
+        .guide-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 8px;
+        }
+
+        .guide-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .guide-subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.6;
+            max-width: 440px;
+        }
+
+        .guide-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .guide-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+            text-align: right;
+        }
+
+        /* --- Legend --- */
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+            padding: 14px 20px;
+            background: var(--glass-bg);
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-mid);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .ld-do     { background: var(--glass-border); border: 1px solid var(--lavender); }
+        .ld-say    { background: var(--say-bg); border: 1px solid var(--say-border); }
+        .ld-watch  { background: rgba(214,74,74,0.12); border: 1px solid rgba(214,74,74,0.3); }
+
+        /* --- Timeline connector --- */
+        .act-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .act-spine {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            padding-top: 18px;
+        }
+
+        .spine-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .spine-line {
+            width: 2px;
+            flex: 1;
+            min-height: 30px;
+            background: var(--glass-border);
+            margin: 4px 0;
+        }
+
+        .act-content {
+            flex: 1;
+            margin-bottom: 28px;
+        }
+
+        /* --- Act block --- */
+        .act-block {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 3px 16px var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        .act-top {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .act-top-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .act-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .act-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .act-timing {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .timing-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            background: rgba(144,144,192,0.08);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3px 10px;
+            white-space: nowrap;
+        }
+
+        .act-divider {
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        /* --- Sections within act --- */
+        .act-section {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .act-section:last-child { border-bottom: none; }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .label-do    { color: var(--lavender-deep); }
+        .label-say   { color: #a07818; }
+        .label-watch { color: var(--snes-red); }
+        .label-transition { color: var(--snes-green); }
+
+        /* DO list */
+        .do-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .do-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.55;
+        }
+
+        .do-marker {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .do-item strong { color: var(--text-dark); font-weight: 600; }
+
+        /* SAY blocks */
+        .say-section {
+            background: var(--say-bg);
+        }
+
+        .say-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .say-item {
+            border-left: 3px solid var(--say-border);
+            padding: 10px 14px;
+            background: rgba(255,253,245,0.8);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .say-item p {
+            font-size: 13.5px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .say-item .say-note {
+            font-size: 11.5px;
+            color: var(--text-light);
+            font-style: normal;
+            margin-top: 4px;
+        }
+
+        /* WATCH blocks */
+        .watch-section {
+            background: rgba(214,74,74,0.03);
+        }
+
+        .watch-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .watch-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.55;
+        }
+
+        .watch-item::before {
+            content: "!";
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--snes-red);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* TRANSITION blocks */
+        .transition-section {
+            background: rgba(90,185,122,0.04);
+        }
+
+        .transition-line {
+            font-size: 13.5px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-style: italic;
+            border-left: 3px solid var(--snes-green);
+            padding: 10px 14px;
+            border-radius: 0 8px 8px 0;
+            background: rgba(90,185,122,0.06);
+        }
+
+        /* --- Break block --- */
+        .break-block {
+            background: rgba(144,144,192,0.07);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .break-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: #b0b0c8;
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .break-text {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.55;
+        }
+
+        .break-line { flex: 1; height: 1px; background: var(--glass-border); }
+
+        /* --- Before session block --- */
+        .before-block {
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            padding: 22px 24px;
+            margin-bottom: 32px;
+        }
+
+        .before-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--lavender-deep);
+            margin-bottom: 14px;
+        }
+
+        .before-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 560px) { .before-grid { grid-template-columns: 1fr; } }
+
+        .before-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.55;
+        }
+
+        .before-item::before {
+            content: "✓";
+            font-size: 11px;
+            color: var(--snes-green);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* colors per act */
+        .col-act1 { background: var(--lavender-deep); }
+        .col-act2 { background: var(--snes-blue); }
+        .col-act3 { background: var(--snes-green); }
+        .col-act4 { background: var(--snes-red); }
+        .col-act5 { background: var(--amber); }
+
+        .border-act1 { border-top: 3px solid var(--lavender-deep); }
+        .border-act2 { border-top: 3px solid var(--snes-blue); }
+        .border-act3 { border-top: 3px solid var(--snes-green); }
+        .border-act4 { border-top: 3px solid var(--snes-red); }
+        .border-act5 { border-top: 3px solid var(--amber); }
+
+        .spine-act1 { background: var(--lavender-deep); }
+        .spine-act2 { background: var(--snes-blue); }
+        .spine-act3 { background: var(--snes-green); }
+        .spine-act4 { background: var(--snes-red); }
+        .spine-act5 { background: var(--amber); }
+
+        /* footer */
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+        }
+
+        @media print {
+            body { background: #fff; }
+            body::before { display: none; }
+            .act-block { box-shadow: none; border: 1px solid #ccc; }
+            .back-link { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="aspect-session-overview.html" class="back-link">← Back to session overview</a>
+
+    <!-- Header -->
+    <div class="guide-header">
+        <div class="guide-header-left">
+            <p class="guide-eyebrow">/// For your eyes only</p>
+            <h1 class="guide-title">Facilitation Guide</h1>
+            <p class="guide-subtitle">A linear guide through the day — what to do, what to say, what to watch for, and how to move between acts. Use it as a spine, not a script.</p>
+        </div>
+        <div class="guide-header-right">
+            <span class="guide-meta">Aspect Hunter School</span>
+            <span class="guide-meta">Monday 20 April 2026</span>
+            <span class="guide-meta">10:00 AM — 1:30 PM</span>
+        </div>
+    </div>
+
+    <!-- Narrative link -->
+    <a href="day-narrative.html" style="display:inline-flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;padding:0.6rem 1.1rem;background:rgba(144,144,192,0.12);border:1px solid rgba(144,144,192,0.3);border-radius:8px;font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--lavender-deep);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(144,144,192,0.22)'" onmouseout="this.style.background='rgba(144,144,192,0.12)'">
+        <span style="font-size:1rem;">🗺</span> Not sure you own the full day? → Read the plain-language narrative
+    </a>
+
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item"><div class="legend-dot ld-do"></div> Facilitation moves — what to do</div>
+        <div class="legend-item"><div class="legend-dot ld-say"></div> Key lines — what to say</div>
+        <div class="legend-item"><div class="legend-dot ld-watch"></div> Watch for — contingencies</div>
+    </div>
+
+    <!-- Before the session -->
+    <div class="before-block">
+        <p class="before-title">/// Before you begin — room and setup</p>
+        <div class="before-grid">
+            <div class="before-item">Session overview page open and visible on screen</div>
+            <div class="before-item">Hybrid setup confirmed — online participants can see and hear</div>
+            <div class="before-item">Tables arranged for group work — 4 to 6 per table</div>
+            <div class="before-item">All five act pages tested and loading correctly</div>
+            <div class="before-item">Your opening student story in mind — a specific student, not a type</div>
+            <div class="before-item">Your closing student story ready — the same student, resolved</div>
+        </div>
+    </div>
+
+    <!-- PREFACE -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot" style="background:#4a6880;"></div>
+            <div class="spine-line"></div>
+        </div>
+        <div class="act-content">
+            <div class="act-block" style="border-top: 3px solid #4a6880;">
+                <div class="act-top">
+                    <div class="act-top-left">
+                        <span class="act-badge" style="background:#4a6880;">Preface</span>
+                        <span class="act-name">Shared Language</span>
+                    </div>
+                    <div class="act-timing">
+                        <span class="timing-pill">10:00 – 10:15</span>
+                        <span class="timing-pill">15 minutes</span>
+                        <span class="timing-pill">Presenter-led</span>
+                    </div>
+                </div>
+                <div class="act-divider"></div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Open with — why two frameworks</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"Before we do anything today, I want to make sure we're speaking the same language. There are two frameworks underpinning this whole session — Structured Teaching and UDL. You may already know one or both of them. Either way, I want to give you my version."</p>
+                            <p class="say-note">Keep this brisk. This is framing, not teaching. You're establishing shared reference points, not delivering a lecture.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — Structured Teaching (4–5 min)</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>Define Structured Teaching: an approach to autism education that makes the environment and expectations physically and visually predictable, supporting independence and reducing cognitive load.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Name the four elements: physical structure, schedules, work systems, task organisation. One sentence each.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Land the core idea: "When the structure does the communicating, students don't have to rely on verbal instruction or social inference."</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — UDL (4–5 min)</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>Define UDL: a framework for designing learning experiences that work for the widest range of learners from the outset — not one lesson modified for students who don't fit.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Use the architecture analogy: ramps and automatic doors work for everyone, not just people who need "special" access.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Name the three principles: Engagement (the WHY), Representation (the WHAT), Expression (the HOW).</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Land the key shift: "When a student can't access a lesson, UDL says the barrier is in the design — not in the student."</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — the comparison (2 min)</p>
+                    <div class="do-list" style="margin-bottom:1rem;">
+                        <div class="do-item"><span class="do-marker">→</span><span>Walk through the table below. Keep it brisk — one sentence per row.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Close with the synthesis: "UDL is a design philosophy for human variability." Then stop.</span></div>
+                    </div>
+                    <div style="overflow-x:auto;margin-top:1rem;border:1px solid rgba(107,107,157,0.2);border-radius:12px;overflow:hidden;">
+                        <table style="width:100%;border-collapse:collapse;font-size:1.05rem;">
+                            <thead>
+                                <tr style="border-bottom:2px solid rgba(107,107,157,0.25);">
+                                    <th style="padding:18px 22px;text-align:left;color:transparent;width:22%;"></th>
+                                    <th style="padding:18px 22px;text-align:center;color:var(--lavender-deep);font-family:'Space Mono',monospace;font-size:0.85rem;font-weight:700;letter-spacing:0.05em;width:39%;">STRUCTURED TEACHING</th>
+                                    <th style="padding:18px 22px;text-align:center;color:var(--snes-blue);font-family:'Space Mono',monospace;font-size:0.85rem;font-weight:700;letter-spacing:0.05em;width:39%;">UNIVERSAL DESIGN FOR LEARNING</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid rgba(107,107,157,0.12);">
+                                    <td style="padding:16px 22px;font-weight:700;color:var(--text-dark);font-size:1rem;">Origin</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">Autism-specific</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">Mainstream education</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid rgba(107,107,157,0.12);background:rgba(144,144,192,0.05);">
+                                    <td style="padding:16px 22px;font-weight:700;color:var(--text-dark);font-size:1rem;">Starting Point</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">The individual student's profile</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">The range of learners in a group</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid rgba(107,107,157,0.12);">
+                                    <td style="padding:16px 22px;font-weight:700;color:var(--text-dark);font-size:1rem;">Primary Tool</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">The environment and its physical/visual predictability</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">The design of the learning experience itself</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid rgba(107,107,157,0.12);background:rgba(144,144,192,0.05);">
+                                    <td style="padding:16px 22px;font-weight:700;color:var(--text-dark);font-size:1rem;">View of Flexibility</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">Consistency and predictability is the support</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">Flexibility and choice is the support</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:16px 22px;font-weight:700;color:var(--text-dark);font-size:1rem;">Relationship to Routine</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">Routine reduces cognitive load</td>
+                                    <td style="padding:16px 22px;color:var(--text-mid);text-align:center;">Routine can become a barrier</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="act-section watch-section">
+                    <p class="section-label label-watch">/// Watch for</p>
+                    <div class="watch-list">
+                        <div class="watch-item">People who want to debate the frameworks right now. Acknowledge it: "Hold that thought — we're going to get there, and it'll land better after you've done some work."</div>
+                        <div class="watch-item">People who feel like you're dismissing Structured Teaching. You're not. Name it explicitly if needed: "I use Structured Teaching as a foundation all day. This is not about replacing it."</div>
+                    </div>
+                </div>
+
+                <div class="act-section transition-section">
+                    <p class="section-label label-transition">/// Transition to Act 1</p>
+                    <div class="transition-line">"Now I want to show you a lesson. It's a real lesson — one you'd recognise. And I'd like us to look at it together before we do anything else."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACT 1 -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot spine-act1"></div>
+            <div class="spine-line"></div>
+        </div>
+        <div class="act-content">
+            <div class="act-block border-act1">
+                <div class="act-top">
+                    <div class="act-top-left">
+                        <span class="act-badge col-act1">Act 1</span>
+                        <span class="act-name">The Mirror</span>
+                    </div>
+                    <div class="act-timing">
+                        <span class="timing-pill">10:00 – 10:30</span>
+                        <span class="timing-pill">30 minutes</span>
+                        <span class="timing-pill">Individual → Whole Room</span>
+                    </div>
+                </div>
+                <div class="act-divider"></div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Open with — your student story</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>Tell the story of a specific student — one who was outside the classroom, or disengaged, or unreachable in a lesson that was otherwise going well. Make it concrete. A name, a moment, a detail.</p>
+                            <p class="say-note">Don't open with UDL. Don't open with theory. Open with a person. The room will settle into whatever you bring first.</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Today I want us to use that student as our compass. Not as a problem to fix — as a design brief."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — the lesson (2 min)</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>Direct everyone to <strong>Act 1 — The Mirror</strong> on their devices. Give them 2 minutes to read the lesson. Nothing else yet — just read.</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — table activity (15 min)</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Step 1 — "How would you design this?" (5 min)</strong> Each table sketches their approach to the lesson for their students. Their actual practice, not an ideal. Don't frame it as critique — frame it as expertise.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Step 2 — "Who does this serve well?" (2 min)</strong> Which student in their class would thrive in what they just described? A specific name, not a type.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Step 3 — "Who might find this harder?" (3 min)</strong> Same design — who is at the edges of what it currently reaches? Again, a specific student.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Step 4 — Whole-room harvest (5 min)</strong> One observation per table. Capture the patterns on the shared display. Let the room hear its own thinking.</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Key lines to land</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"Start from what you'd actually do. Not the ideal lesson — the real one."</p>
+                            <p class="say-note">This is how you get honest answers. Permission to be real, not aspirational.</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"We're not looking for what's wrong. We're starting from what's already working — and asking who it's not yet reaching."</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Hold that student in mind. They're your design brief for the rest of the day."</p>
+                            <p class="say-note">This is your close for Act 1. The student they named in Step 3 becomes their compass through Acts 2 and 3.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section watch-section">
+                    <p class="section-label label-watch">/// Watch for</p>
+                    <div class="watch-list">
+                        <div class="watch-item">Tables who jump straight to redesign. Redirect gently: "Let's stay with who it serves first — the redesign comes later."</div>
+                        <div class="watch-item">Defensiveness about their current practice. You're not critiquing it — make that explicit: "This isn't about what's wrong. Your practice is the foundation."</div>
+                        <div class="watch-item">Vague answers in the harvest ("all students benefit"). Push for specificity: "Name one. Who specifically would thrive here?"</div>
+                        <div class="watch-item">Online participants falling behind. Check in at the harvest — invite one online table to share first.</div>
+                    </div>
+                </div>
+
+                <div class="act-section transition-section">
+                    <p class="section-label label-transition">/// Transition to Act 2</p>
+                    <div class="transition-line">"Before we redesign anything, we're going to understand it properly. I want us to look at this lesson through the eyes of four specific students — not in general, but for real people with real needs."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACT 2 -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot spine-act2"></div>
+            <div class="spine-line"></div>
+        </div>
+        <div class="act-content">
+            <div class="act-block border-act2">
+                <div class="act-top">
+                    <div class="act-top-left">
+                        <span class="act-badge col-act2">Act 2</span>
+                        <span class="act-name">The Diagnosis</span>
+                    </div>
+                    <div class="act-timing">
+                        <span class="timing-pill">10:30 – 11:10</span>
+                        <span class="timing-pill">40 minutes</span>
+                        <span class="timing-pill">Table Teams</span>
+                    </div>
+                </div>
+                <div class="act-divider"></div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — set up the activity</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>Direct everyone to <strong>Act 2 — The Diagnosis</strong>. Assign one student persona per table (or let them choose). They will work on that student for all three rounds.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Three rounds of 10 minutes each. Each round moves from specific → causal → structural. Call time between rounds.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Circulate constantly. Listen more than you speak. Your job here is to hear what's emerging, not to lead it.</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Circulating prompts — use when tables get stuck</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"Where exactly does your student get stuck — what is the moment it breaks?"</p>
+                            <p class="say-note">Round 1 prompt. Push for specificity — not "this lesson is hard for them" but the precise point of failure.</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"What does the lesson assume your student can do — that they may not be able to?"</p>
+                            <p class="say-note">Round 2 prompt. Help tables use the template: "This lesson assumes ___ can ___. But for ___, that breaks because ___."</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Is this a problem for your student — or is it a flaw in how the lesson was designed?"</p>
+                            <p class="say-note">Round 3 prompt. This is the shift from individual to structural. Push them to name the design flaw, not the student's gap.</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Think about Priya specifically. This lesson is built around visual supports. What does that mean for her?"</p>
+                            <p class="say-note">Priya's vision impairment is the sharpest tension in the room. If tables haven't landed on it, point them there.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — share-back</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>After Round 3, give tables 1 minute to agree on their key finding — the structural assumption they found.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Go around the room — <strong>60 seconds per table</strong>. Keep to time. Harvest key themes onto the Padlet (QR on screen) as they share.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Look for: the Priya insight (vision + visual lesson), the Lachlan insight (relevance/purpose), the Malcolm insight (physical access). If they don't surface, name them yourself briefly.</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section watch-section">
+                    <p class="section-label label-watch">/// Watch for</p>
+                    <div class="watch-list">
+                        <div class="watch-item">Tables moving into solutions in Round 1 or 2. Bring them back: "Stay in the diagnosis — what is broken, not how to fix it."</div>
+                        <div class="watch-item">Tables focusing only on Malcolm (most obvious support needs). Gently push: "What about Priya? What about Lachlan?"</div>
+                        <div class="watch-item">Share-back running long. Keep it moving — 60 seconds is enough. You're harvesting themes, not full reports.</div>
+                    </div>
+                </div>
+
+                <div class="act-section transition-section">
+                    <p class="section-label label-transition">/// Transition to Break</p>
+                    <div class="transition-line">"You've just built a shared picture of what this lesson doesn't offer. That's the diagnostic work. After the break, you redesign it."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BREAK -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot" style="background:#b0b0c8;"></div>
+            <div class="spine-line"></div>
+        </div>
+        <div class="act-content">
+            <div class="break-block">
+                <span class="break-pill">Break</span>
+                <span class="break-text">11:10 – 11:30 · 20 minutes · Use this time to review what you harvested from Act 2 and identify the 2–3 themes you'll weave into Act 4.</span>
+                <div class="break-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACT 3 -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot spine-act3"></div>
+            <div class="spine-line"></div>
+        </div>
+        <div class="act-content">
+            <div class="act-block border-act3">
+                <div class="act-top">
+                    <div class="act-top-left">
+                        <span class="act-badge col-act3">Act 3</span>
+                        <span class="act-name">The Rebuild</span>
+                    </div>
+                    <div class="act-timing">
+                        <span class="timing-pill">11:30 – 12:20</span>
+                        <span class="timing-pill">50 minutes</span>
+                        <span class="timing-pill">Hackathon</span>
+                    </div>
+                </div>
+                <div class="act-divider"></div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Open Act 3 with energy</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"Right. You've diagnosed the problem. Now you're going to rebuild the lesson — three rounds, 15 minutes each. Each round has a constraint. The constraint is not optional."</p>
+                            <p class="say-note">Say this with energy. The pace shifts here — Act 3 is the fastest part of the day.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — run the three rounds</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>Direct everyone to <strong>Act 3 — The Rebuild</strong>. Read the Round 1 constraint aloud: <em>"Every student must have a way in."</em></span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Round 1 — 15 minutes.</strong> Circulate. Ask: "Who does this entry point reach? Who doesn't it reach yet?"</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Call time. <strong>2-minute steal.</strong> Be explicit: "Look at the table next to you. Take one idea. Go."</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Read Round 2 constraint aloud: <em>"The content must reach every student."</em> <strong>Round 2 — 15 minutes.</strong></span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Call time. <strong>2-minute steal.</strong> Same instruction.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Read Round 3 constraint aloud: <em>"Every student must be able to show you what they know."</em> <strong>Round 3 — 15 minutes.</strong></span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Timing discipline is everything in this act. Keep to the clock — the urgency is part of the design.</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Circulating prompts</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"You've kept the structure — good. Now: does Malcolm have a way in? Does Priya?"</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"If Lachlan asks 'why are we doing this?' — what's the answer in your redesign?"</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"What does 'something real' look like for Sally specifically?"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section watch-section">
+                    <p class="section-label label-watch">/// Watch for</p>
+                    <div class="watch-list">
+                        <div class="watch-item">Tables ignoring the constraints. Redirect immediately — the constraints are the pedagogical point of this act.</div>
+                        <div class="watch-item">The steal being skipped. Physically prompt it: walk over, point to the neighbouring table's work, say "What's one thing you can take?"</div>
+                        <div class="watch-item">Tables finishing early. Ask: "Which of the four students still isn't reached? Go back for them."</div>
+                    </div>
+                </div>
+
+                <div class="act-section transition-section">
+                    <p class="section-label label-transition">/// Transition to Act 4</p>
+                    <div class="transition-line">"Hold onto what you built. Don't tidy it up — the roughness is where the thinking lives. We're going to hold it up to something now."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACT 4 -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot spine-act4"></div>
+            <div class="spine-line"></div>
+        </div>
+        <div class="act-content">
+            <div class="act-block border-act4">
+                <div class="act-top">
+                    <div class="act-top-left">
+                        <span class="act-badge col-act4">Act 4</span>
+                        <span class="act-name">The Confrontation</span>
+                    </div>
+                    <div class="act-timing">
+                        <span class="timing-pill">12:20 – 12:45</span>
+                        <span class="timing-pill">25 minutes</span>
+                        <span class="timing-pill">Craig-led</span>
+                    </div>
+                </div>
+                <div class="act-divider"></div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — present the tension (5+2+5+8+5 min)</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>5 min:</strong> Direct everyone to <strong>Act 4 — The Confrontation</strong>. Slow the pace deliberately. This is the most Craig-led part of the day. Present the two-card tension on screen.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>2 min:</strong> Land the key contrast: <em>"Structured teaching honours what you know. UDL honours what you don't."</em> Say it slowly. Pause. Let it sit.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>5 min:</strong> Table discussion — <em>"How should we incorporate student voice into the co-design of our lessons?"</em> Let them discuss. You listen. Harvest one or two responses aloud.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>8 min:</strong> Table audit — direct tables to the audit questions with their Act 3 redesign in front of them.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>5 min:</strong> Whole-room share — one finding per table. Keep it moving. You're after insight, not reporting.</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Key lines — land these carefully</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"Structured teaching honours what you know. UDL honours what you don't. These are not opposites — structured teaching is already doing most of this work. UDL asks you to flex it at the edges."</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"We don't remove structure. We design it so more students can enter it."</p>
+                            <p class="say-note">This is the single most important line of the day. Pause after it.</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Look at what you built in Act 3. Where does your own preference show up in it? That's not a criticism — that's the work."</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Some of our most structured classrooms are already halfway to UDL. They just haven't been given permission to flex."</p>
+                            <p class="say-note">Use this as your close for Act 4 — it's affirming and forward-looking.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section watch-section">
+                    <p class="section-label label-watch">/// Watch for</p>
+                    <div class="watch-list">
+                        <div class="watch-item">Anyone feeling that structured teaching is being criticised. Explicitly name what it gets right — it's on the page — before introducing the tension.</div>
+                        <div class="watch-item">The audit running long. Keep table discussion to 8 minutes — the whole-room share should be brief. The audit is the real work, not the share-back.</div>
+                        <div class="watch-item">The pace being too fast. This act should feel different to Act 3. Slow down deliberately. Silence is fine here.</div>
+                    </div>
+                </div>
+
+                <div class="act-section transition-section">
+                    <p class="section-label label-transition">/// Transition to Act 5</p>
+                    <div class="transition-line">"The last thing I want to do today is leave you with a concept. I want to leave you with a question — one you'll carry into every lesson plan from here."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACT 5 -->
+    <div class="act-wrapper">
+        <div class="act-spine">
+            <div class="spine-dot spine-act5"></div>
+        </div>
+        <div class="act-content">
+            <div class="act-block border-act5">
+                <div class="act-top">
+                    <div class="act-top-left">
+                        <span class="act-badge col-act5">Act 5</span>
+                        <span class="act-name">Commit + Close</span>
+                    </div>
+                    <div class="act-timing">
+                        <span class="timing-pill">1:00 – 1:30</span>
+                        <span class="timing-pill">30 minutes incl. buffer</span>
+                        <span class="timing-pill">Individual → Room</span>
+                    </div>
+                </div>
+                <div class="act-divider"></div>
+
+                <div class="act-section">
+                    <p class="section-label label-do">/// Do — three rounds (3+5 / 3+5 / 8 min) + share (4 min)</p>
+                    <div class="do-list">
+                        <div class="do-item"><span class="do-marker">→</span><span>Direct everyone to <strong>Act 5 — Commit + Close</strong>. Introduce the structure: three rounds, individual then table.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Round 1 — Reflect (8 min):</strong> 3 min individual quiet, then 5 min table. Prompt: one thing today made you question about how you plan or support learning.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Round 2 — The Question (8 min):</strong> 3 min individual, then 5 min table. Distil the reflection into one question they'll ask before every lesson plan. Tables help sharpen it.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Round 3 — Apply It (8 min):</strong> Individual. Apply their question to a real lesson they're planning next week. What changes?</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span><strong>Whole-room share (4 min):</strong> One question per table — the one they'll actually use. Then close.</span></div>
+                        <div class="do-item"><span class="do-marker">→</span><span>Close with your student story — the same student from the opening, but now with a resolution. What did designing for them make possible?</span></div>
+                    </div>
+                </div>
+
+                <div class="act-section say-section">
+                    <p class="section-label label-say">/// Closing lines</p>
+                    <div class="say-list">
+                        <div class="say-item">
+                            <p>"You came in with a lesson. You leave with a question. That question is the work continuing."</p>
+                        </div>
+                        <div class="say-item">
+                            <p>"Design is never finished. It just gets closer to the range."</p>
+                            <p class="say-note">That's the last thing you say. Then let it sit.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="act-section watch-section">
+                    <p class="section-label label-watch">/// Watch for</p>
+                    <div class="watch-list">
+                        <div class="watch-item">Questions that are too abstract. Gently push: "What would you actually ask yourself — something specific enough to help you make a decision in the moment?"</div>
+                        <div class="watch-item">Round 2 table conversations going in circles. Prompt: "Which version of your question makes you uncomfortable? That's probably the right one."</div>
+                        <div class="watch-item">Running over time. If you're tight, shorten the whole-room share but protect the closing. The story matters more than the share.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="footer">/// FACILITATION GUIDE — ASPECT HUNTER SCHOOL — APRIL 2026 ///</p>
+
+</div>
+
+</body>
+</html>

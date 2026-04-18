@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Presenter Slides — UDL PD — Aspect Hunter School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --amber: #c8a830;
+            --bg: #0f0f1a;
+            --bg2: #14141f;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ─── Slide engine ─── */
+        .deck { position: relative; width: 100vw; height: 100vh; }
+
+        .slide {
+            position: absolute; inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 40px;
+            background: var(--bg);
+        }
+        .slide.active { display: flex; }
+
+        /* glow overlays */
+        .slide::before {
+            content: "";
+            position: absolute; inset: 0;
+            pointer-events: none;
+        }
+        .glow-lavender::before { background: radial-gradient(circle at 50% 35%, rgba(107,107,157,0.18) 0%, transparent 65%); }
+        .glow-blue::before    { background: radial-gradient(circle at 50% 35%, rgba(90,126,194,0.18) 0%, transparent 65%); }
+        .glow-green::before   { background: radial-gradient(circle at 50% 35%, rgba(90,185,122,0.15) 0%, transparent 65%); }
+        .glow-red::before     { background: radial-gradient(circle at 50% 35%, rgba(214,74,74,0.15) 0%, transparent 65%); }
+        .glow-amber::before   { background: radial-gradient(circle at 50% 35%, rgba(200,168,48,0.14) 0%, transparent 65%); }
+        .glow-welcome::before {
+            background:
+                radial-gradient(circle at 12% 18%, rgba(107,107,157,0.22) 0%, transparent 50%),
+                radial-gradient(circle at 88% 78%, rgba(90,126,194,0.14) 0%, transparent 50%);
+        }
+
+        /* ─── Chrome ─── */
+        .progress-bar {
+            position: fixed; bottom: 0; left: 0; height: 3px;
+            background: var(--lavender); z-index: 200;
+            transition: width 0.35s ease;
+        }
+        .slide-counter {
+            position: fixed; bottom: 14px; right: 18px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            color: rgba(255,255,255,0.22); letter-spacing: 1px; z-index: 200;
+        }
+        .act-indicator {
+            position: fixed; bottom: 14px; left: 18px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            letter-spacing: 2px; text-transform: uppercase; z-index: 200;
+            opacity: 0.55;
+        }
+        .nav-hint {
+            position: fixed; top: 14px; right: 18px;
+            font-family: 'Space Mono', monospace; font-size: 9px;
+            color: rgba(255,255,255,0.15); letter-spacing: 1px; z-index: 200;
+        }
+
+        /* click zones */
+        .click-prev, .click-next {
+            position: fixed; top: 0; bottom: 0; width: 15%;
+            cursor: pointer; z-index: 150;
+        }
+        .click-prev { left: 0; }
+        .click-next { right: 0; }
+
+        /* ─── Shared typographic utilities ─── */
+        .eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.75rem, 1.2vw, 0.95rem); letter-spacing: 2.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.38); margin-bottom: 14px;
+        }
+        .eyebrow-accent { color: inherit; }
+
+        .mono-title {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700; color: #fff; line-height: 1.2;
+        }
+
+        .body-text {
+            font-size: clamp(1rem, 1.8vw, 1.3rem); color: rgba(255,255,255,0.55); line-height: 1.65;
+        }
+
+        .act-pill {
+            display: inline-block;
+            font-family: 'Space Mono', monospace; font-size: 11px;
+            font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+            padding: 7px 18px; border-radius: 30px; color: #fff;
+            margin-bottom: 24px;
+        }
+
+        /* ─── SLIDE 0: Welcome ─── */
+        .welcome-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--lavender); margin-bottom: 28px; position: relative; z-index: 1;
+        }
+        .welcome-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            font-weight: 700; color: #fff; line-height: 1.15;
+            text-align: center; margin-bottom: 20px; position: relative; z-index: 1;
+        }
+        .welcome-sub {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: rgba(255,255,255,0.4); text-align: center;
+            position: relative; z-index: 1; line-height: 1.6;
+        }
+        .welcome-start {
+            margin-top: 36px;
+            font-family: 'Space Mono', monospace;
+            font-size: 13px; color: rgba(255,255,255,0.22); letter-spacing: 1.5px;
+            position: relative; z-index: 1;
+        }
+
+        /* ─── SLIDE 1: Overview ─── */
+        .overview-grid {
+            display: flex; flex-direction: column; gap: 10px;
+            width: 100%; max-width: 98%;
+            position: relative; z-index: 1;
+        }
+        .overview-row {
+            display: flex; align-items: center; gap: 0;
+            border-radius: 12px; overflow: hidden;
+        }
+        .overview-accent {
+            width: 7px; min-height: 80px; flex-shrink: 0;
+        }
+        .overview-body {
+            flex: 1; padding: 18px 32px;
+            background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        }
+        .overview-body-text {}
+        .overview-act-name {
+            font-family: 'Space Mono', monospace; font-size: clamp(1rem, 2.2vw, 1.45rem);
+            font-weight: 700; color: #fff; margin-bottom: 5px;
+        }
+        .overview-act-mode {
+            font-size: clamp(0.9rem, 1.6vw, 1.1rem); color: rgba(255,255,255,0.42);
+        }
+        .overview-time {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+            color: rgba(255,255,255,0.5); white-space: nowrap;
+        }
+        .break-row {
+            display: flex; align-items: center; gap: 16px;
+            padding: 8px 16px;
+        }
+        .break-row-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+        .break-row-label {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.22);
+        }
+
+        /* ─── ACT title card ─── */
+        .act-card-inner {
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; position: relative; z-index: 1;
+        }
+        .act-big-num {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            line-height: 0.85; margin-bottom: 12px; letter-spacing: -2px;
+        }
+        .act-name {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.6rem, 4vw, 3rem); color: #fff;
+        }
+        .act-timing {
+            font-family: 'Space Mono', monospace; font-size: 12px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.32); margin-top: 18px;
+        }
+
+        /* ─── SLIDE 3: The Lesson ─── */
+        .lesson-display {
+            background: rgba(255,255,255,0.04);
+            border-radius: 18px; border: 1px solid rgba(255,255,255,0.08);
+            padding: 40px 52px; width: 100%; max-width: 94%;
+            text-align: left; position: relative; z-index: 1; margin-top: 16px;
+        }
+        .lesson-kla {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+            letter-spacing: 2.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.3); margin-bottom: 10px;
+        }
+        .lesson-title {
+            font-family: 'Space Mono', monospace; font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 700; color: #fff; margin-bottom: 16px;
+        }
+        .lesson-body { font-size: clamp(1rem, 1.8vw, 1.3rem); color: rgba(255,255,255,0.55); line-height: 1.7; }
+        .lesson-note {
+            margin-top: 20px; padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            font-family: 'Space Mono', monospace; font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+            color: rgba(255,255,255,0.3); letter-spacing: 1px;
+        }
+
+        /* ─── SLIDE 4: UDL Three Principles ─── */
+        .udl-three {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 18px; width: 100%; max-width: 98%;
+            margin-top: 16px; position: relative; z-index: 1;
+        }
+        .udl-col {
+            border-radius: 14px; padding: 30px 26px;
+            display: flex; flex-direction: column; gap: 12px;
+            text-align: left; position: relative; overflow: hidden;
+        }
+        .udl-col-bg-num {
+            position: absolute; right: -8px; bottom: -12px;
+            font-family: 'Space Mono', monospace; font-size: 7rem;
+            font-weight: 700; line-height: 1; opacity: 0.12;
+            user-select: none;
+        }
+        .udl-col-label {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.45); margin-bottom: 4px;
+        }
+        .udl-col-title {
+            font-family: 'Space Mono', monospace; font-size: clamp(1.1rem, 2vw, 1.5rem);
+            font-weight: 700; color: #fff; line-height: 1.2;
+        }
+        .udl-col-q {
+            font-size: clamp(0.9rem, 1.6vw, 1.15rem); color: rgba(255,255,255,0.5);
+            line-height: 1.55; font-style: italic;
+        }
+        .udl-col-points {
+            list-style: none; display: flex; flex-direction: column; gap: 7px;
+            margin-top: 6px;
+        }
+        .udl-col-points li {
+            font-size: clamp(0.85rem, 1.5vw, 1.05rem); color: rgba(255,255,255,0.45); line-height: 1.5;
+            padding-left: 18px; position: relative;
+        }
+        .udl-col-points li::before {
+            content: "→"; position: absolute; left: 0;
+            font-family: 'Space Mono', monospace; font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+        }
+
+        /* ─── SLIDE 5: The Question ─── */
+        .big-q {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+            color: #fff; line-height: 1.35; text-align: center;
+            max-width: 820px; position: relative; z-index: 1;
+        }
+        .big-q em { color: var(--lavender); font-style: normal; }
+
+        /* ─── SLIDE 6: Activity ─── */
+        .activity-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 32px 44px;
+            width: 100%; max-width: 96%;
+            text-align: left; position: relative; z-index: 1; margin-top: 16px;
+        }
+        .activity-card .step {
+            font-size: clamp(1rem, 1.9vw, 1.35rem); color: rgba(255,255,255,0.6); line-height: 1.65;
+            padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: flex-start; gap: 20px;
+        }
+        .activity-card .step:last-child { border-bottom: 1px solid rgba(255,255,255,0.07); }
+        .step-num {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.75rem, 1.3vw, 1rem);
+            color: rgba(255,255,255,0.3); flex-shrink: 0; padding-top: 2px;
+        }
+        .tool-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: 'Space Mono', monospace; font-size: 11px;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            color: #fff; background: var(--lavender-deep);
+            border-radius: 8px; padding: 10px 18px; text-decoration: none;
+            margin-top: 20px; position: relative; z-index: 1;
+        }
+
+        /* ─── SLIDE 8: Personas ─── */
+        .persona-four {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 14px; width: 100%; max-width: 98%;
+            margin-top: 16px; position: relative; z-index: 1;
+        }
+        .p-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.07);
+            overflow: hidden;
+        }
+        .p-top { height: 4px; }
+        .p-body { padding: 18px 16px 20px; }
+        .p-name {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.95rem, 1.7vw, 1.25rem);
+            font-weight: 700; color: #fff; margin-bottom: 2px;
+        }
+        .p-age {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.65rem, 1vw, 0.8rem);
+            letter-spacing: 1px; color: rgba(255,255,255,0.3);
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+        .p-traits {
+            display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px;
+        }
+        .p-trait {
+            font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.07);
+            border-radius: 20px; padding: 4px 10px;
+        }
+        .p-desc { font-size: clamp(0.8rem, 1.4vw, 1rem); color: rgba(255,255,255,0.38); line-height: 1.55; }
+
+        /* ─── SLIDE 9: Task ─── */
+        .task-big {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: #fff; line-height: 1.35; text-align: center;
+            max-width: 820px; position: relative; z-index: 1;
+        }
+        .task-note-block {
+            margin-top: 24px;
+            padding: 22px 36px;
+            background: rgba(90,126,194,0.1);
+            border: 1px solid rgba(90,126,194,0.2);
+            border-radius: 12px;
+            font-size: clamp(1rem, 1.8vw, 1.3rem); color: rgba(255,255,255,0.55); line-height: 1.6;
+            max-width: 80%; text-align: center;
+            position: relative; z-index: 1;
+        }
+
+        /* ─── SLIDE 10: Share-back ─── */
+        .shareback-big {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1rem, 2.5vw, 1.5rem); color: #fff;
+            line-height: 1.4; text-align: center;
+            max-width: 700px; position: relative; z-index: 1;
+            margin-top: 12px;
+        }
+        .timer-chip {
+            display: inline-block;
+            font-family: 'Space Mono', monospace; font-size: 2rem;
+            font-weight: 700; color: var(--snes-blue);
+            background: rgba(90,126,194,0.12);
+            border-radius: 10px; padding: 12px 28px;
+            margin-top: 24px; position: relative; z-index: 1;
+        }
+
+        /* ─── SLIDE 11: Break ─── */
+        .break-big {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(3rem, 10vw, 7rem); color: rgba(255,255,255,0.12);
+            line-height: 1; position: relative; z-index: 1;
+        }
+        .break-time-chip {
+            font-family: 'Space Mono', monospace; font-size: 1.4rem;
+            font-weight: 700; color: rgba(255,255,255,0.5);
+            position: relative; z-index: 1; margin-top: 16px;
+        }
+        .break-back {
+            font-family: 'Space Mono', monospace; font-size: 13px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.25); margin-top: 12px;
+            position: relative; z-index: 1;
+        }
+
+        /* ─── SLIDE 12: Act 3 overview ─── */
+        .flow-row {
+            display: flex; align-items: stretch;
+            gap: 0; width: 100%; max-width: 96%;
+            border-radius: 10px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.07);
+            margin-top: 24px; position: relative; z-index: 1;
+        }
+        .flow-seg {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 6px; padding: 18px 12px; text-align: center;
+        }
+        .flow-round { flex: 3; background: rgba(90,185,122,0.18); }
+        .flow-steal { flex: 1; background: rgba(90,185,122,0.07); }
+        .flow-seg-label {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+            font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+            color: var(--snes-green); line-height: 1.3;
+        }
+        .flow-steal .flow-seg-label { font-size: clamp(0.65rem, 1vw, 0.8rem); opacity: 0.6; }
+        .flow-seg-time { font-size: clamp(0.7rem, 1.1vw, 0.85rem); color: rgba(255,255,255,0.3); }
+
+        /* ─── SLIDES 13,15,17: Constraint reveals ─── */
+        .constraint-reveal {
+            display: flex; flex-direction: column;
+            align-items: center; text-align: center;
+            position: relative; z-index: 1;
+        }
+        .constraint-label-sm {
+            font-family: 'Space Mono', monospace; font-size: 11px;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: var(--snes-green); margin-bottom: 20px;
+        }
+        .constraint-text-big {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.6rem, 4.5vw, 3rem);
+            color: #fff; line-height: 1.2; margin-bottom: 28px;
+        }
+        .constraint-task {
+            font-size: clamp(1.05rem, 2vw, 1.4rem); color: rgba(255,255,255,0.5); line-height: 1.65;
+            max-width: 80%; margin-bottom: 20px;
+        }
+        .timer-green {
+            font-family: 'Space Mono', monospace; font-size: 1.3rem;
+            font-weight: 700; color: var(--snes-green);
+            background: rgba(90,185,122,0.1);
+            border: 1px solid rgba(90,185,122,0.22);
+            border-radius: 8px; padding: 10px 24px;
+        }
+
+        /* ─── SLIDES 14,16: Steal ─── */
+        .steal-card {
+            background: rgba(90,185,122,0.06);
+            border: 1px solid rgba(90,185,122,0.2);
+            border-radius: 18px; padding: 36px 52px;
+            text-align: center; max-width: 700px;
+            position: relative; z-index: 1;
+        }
+        .steal-icon-big {
+            font-family: 'Space Mono', monospace;
+            font-size: 3rem; color: var(--snes-green); margin-bottom: 16px;
+            display: block;
+        }
+        .steal-title-big {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: #fff; margin-bottom: 14px;
+        }
+        .steal-desc-big {
+            font-size: clamp(1.05rem, 2vw, 1.4rem); color: rgba(255,255,255,0.5); line-height: 1.65;
+            margin-bottom: 20px;
+        }
+        .steal-timer {
+            font-family: 'Space Mono', monospace; font-size: 1.4rem;
+            font-weight: 700; color: var(--snes-green);
+            background: rgba(90,185,122,0.1); border-radius: 8px; padding: 8px 24px;
+        }
+
+        /* ─── SLIDE 18: Hold onto it ─── */
+        .hold-text {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.5rem, 4vw, 2.8rem);
+            color: #fff; text-align: center; line-height: 1.3;
+            position: relative; z-index: 1;
+        }
+        .hold-sub {
+            margin-top: 18px;
+            font-size: 18px; color: rgba(255,255,255,0.38);
+            text-align: center; position: relative; z-index: 1;
+        }
+
+        /* ─── SLIDE 20: TEACCH / UDL ─── */
+        .tension-split {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 18px; width: 100%; max-width: 98%;
+            margin-top: 16px; position: relative; z-index: 1;
+        }
+        .tension-col {
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px; padding: 28px 28px 30px;
+            text-align: left; border: 1px solid rgba(255,255,255,0.07);
+            position: relative; overflow: hidden;
+        }
+        .tension-col-stripe {
+            position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+        }
+        .tension-col-eyebrow {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.65rem, 1vw, 0.82rem);
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.3); margin-bottom: 6px;
+        }
+        .tension-col-title {
+            font-family: 'Space Mono', monospace; font-size: clamp(1rem, 1.9vw, 1.45rem);
+            font-weight: 700; color: #fff; margin-bottom: 18px;
+        }
+        .tension-list {
+            list-style: none; display: flex; flex-direction: column; gap: 10px;
+        }
+        .tension-list li {
+            font-size: clamp(0.9rem, 1.7vw, 1.2rem); color: rgba(255,255,255,0.6); line-height: 1.5;
+            padding-left: 20px; position: relative;
+        }
+        .tension-list li::before {
+            content: "·"; position: absolute; left: 5px;
+            font-size: 18px; line-height: 1.1;
+        }
+        .teacch-def {
+            margin-top: 12px; font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: rgba(255,255,255,0.28);
+            font-style: italic; line-height: 1.5;
+            border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;
+        }
+
+        /* ─── SLIDE 21: Bridge ─── */
+        .bridge-text {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+            color: #fff; line-height: 1.45; text-align: center;
+            max-width: 820px; position: relative; z-index: 1;
+        }
+        .bridge-text em { color: var(--snes-red); font-style: normal; }
+
+        /* ─── SLIDE 22: Audit ─── */
+        .audit-list {
+            list-style: none; display: flex; flex-direction: column;
+            gap: 0; width: 100%; max-width: 94%;
+            margin-top: 16px; position: relative; z-index: 1;
+            text-align: left;
+        }
+        .audit-item {
+            padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: flex-start; gap: 20px;
+        }
+        .audit-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.07); }
+        .audit-dash {
+            font-family: 'Space Mono', monospace; font-size: clamp(0.8rem, 1.3vw, 1rem);
+            color: var(--snes-red); flex-shrink: 0; padding-top: 2px;
+        }
+        .audit-item p {
+            font-size: clamp(1rem, 1.8vw, 1.3rem); color: rgba(255,255,255,0.72); line-height: 1.5;
+        }
+
+        /* ─── SLIDE 24: 1:1:1 ─── */
+        .commit-three {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 18px; width: 100%; max-width: 96%;
+            margin-top: 28px; position: relative; z-index: 1;
+        }
+        .commit-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px; padding: 28px 20px;
+            text-align: center; display: flex;
+            flex-direction: column; align-items: center; gap: 10px;
+            border: 1px solid rgba(255,255,255,0.07);
+            position: relative; overflow: hidden;
+        }
+        .commit-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0;
+            height: 3px; background: var(--amber);
+        }
+        .commit-num {
+            font-family: 'Space Mono', monospace; font-size: 2.8rem;
+            font-weight: 700; color: rgba(200,168,48,0.2); line-height: 1;
+        }
+        .commit-title {
+            font-family: 'Space Mono', monospace; font-size: 1.05rem;
+            font-weight: 700; color: #fff;
+        }
+        .commit-q {
+            font-size: clamp(0.9rem, 1.6vw, 1.15rem); color: rgba(255,255,255,0.45); line-height: 1.55;
+        }
+
+        /* ─── SLIDE 25: Closing ─── */
+        .closing-q {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.4rem, 4vw, 2.8rem);
+            color: #fff; line-height: 1.3; text-align: center;
+            max-width: 800px; position: relative; z-index: 1;
+        }
+        .closing-note {
+            margin-top: 24px; font-size: clamp(1.05rem, 2vw, 1.4rem); color: rgba(255,255,255,0.38);
+            text-align: center; line-height: 1.65;
+            max-width: 80%; position: relative; z-index: 1;
+        }
+        .closing-footer {
+            margin-top: 40px;
+            font-family: 'Space Mono', monospace; font-size: 11px;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.18); position: relative; z-index: 1;
+        }
+
+        /* ─── Timer Widget ─── */
+        .timer-widget { display:flex; flex-direction:column; align-items:center; gap:12px; position:relative; z-index:1; }
+        .t-ring-wrap { position:relative; }
+        .t-ring-svg { overflow:visible; display:block; }
+        .t-ring-svg.t-normal { width:130px; height:130px; }
+        .t-ring-svg.t-large  { width:185px; height:185px; }
+        .t-ring-track { fill:none; stroke:rgba(255,255,255,0.07); stroke-width:7; }
+        .t-ring-fill  { fill:none; stroke-width:7; stroke-linecap:round; stroke-dasharray:345.6; stroke-dashoffset:0; transition:stroke-dashoffset 0.9s linear, stroke 0.5s ease; }
+        .t-display-text { font-family:'Space Mono',monospace; font-weight:700; transition:fill 0.5s ease; }
+        .t-controls { display:flex; gap:8px; }
+        .t-btn {
+            font-family:'Space Mono',monospace; font-size:10px; font-weight:700;
+            letter-spacing:1.5px; text-transform:uppercase;
+            padding:7px 16px; border-radius:6px; border:1px solid;
+            cursor:pointer; background:transparent; transition:opacity 0.2s;
+        }
+        .t-btn:hover { opacity:0.7; }
+        .t-btn-start { border-color:rgba(255,255,255,0.2); }
+        .t-btn-reset  { color:rgba(255,255,255,0.25); border-color:rgba(255,255,255,0.09); }
+        .timer-widget.t-done .t-display-text { animation:tFlash 0.7s ease-in-out infinite alternate; }
+        .timer-widget.t-urgent .t-ring-fill  { animation:tPulse 0.5s ease-in-out infinite alternate; }
+        @keyframes tFlash { from{opacity:1} to{opacity:0.18} }
+        @keyframes tPulse { from{stroke-width:7} to{stroke-width:11} }
+    </style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+    <!-- ══════════════════════════════════════
+         SLIDE 0 — Welcome
+    ══════════════════════════════════════ -->
+    <div class="slide glow-welcome" data-act="">
+        <p class="welcome-label">Aspect Hunter School — Monday 20 April 2026</p>
+        <h1 class="welcome-title">UDL Professional Learning</h1>
+        <p class="welcome-sub">Welcome. Grab a seat and something to write with.<br>We begin at 10:00.</p>
+        <p class="welcome-start">/// The Universal Sandpit</p>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 1 — Session overview
+    ══════════════════════════════════════ -->
+    <div class="slide glow-lavender" data-act="">
+        <div class="overview-grid">
+            <div class="overview-row">
+                <div class="overview-accent" style="background:#4a6880;"></div>
+                <div class="overview-body">
+                    <div class="overview-body-text">
+                        <p class="overview-act-name">Preface — Shared Language</p>
+                        <p class="overview-act-mode">Presenter-led</p>
+                    </div>
+                    <span class="overview-time">10:00 – 10:15</span>
+                </div>
+            </div>
+            <div class="overview-row">
+                <div class="overview-accent" style="background:var(--lavender-deep);"></div>
+                <div class="overview-body">
+                    <div class="overview-body-text">
+                        <p class="overview-act-name">Act 1 — The Mirror</p>
+                        <p class="overview-act-mode">Individual → Whole Room</p>
+                    </div>
+                    <span class="overview-time">10:15 – 10:45</span>
+                </div>
+            </div>
+            <div class="overview-row">
+                <div class="overview-accent" style="background:var(--snes-blue);"></div>
+                <div class="overview-body">
+                    <div class="overview-body-text">
+                        <p class="overview-act-name">Act 2 — The Analysis</p>
+                        <p class="overview-act-mode">Table Teams</p>
+                    </div>
+                    <span class="overview-time">10:45 – 11:25</span>
+                </div>
+            </div>
+            <div class="break-row">
+                <div class="break-row-line"></div>
+                <span class="break-row-label">Break — 20 min</span>
+                <div class="break-row-line"></div>
+            </div>
+            <div class="overview-row">
+                <div class="overview-accent" style="background:var(--snes-green);"></div>
+                <div class="overview-body">
+                    <div class="overview-body-text">
+                        <p class="overview-act-name">Act 3 — The Rebuild</p>
+                        <p class="overview-act-mode">Hackathon with Constraints</p>
+                    </div>
+                    <span class="overview-time">11:45 – 12:35</span>
+                </div>
+            </div>
+            <div class="overview-row">
+                <div class="overview-accent" style="background:var(--snes-red);"></div>
+                <div class="overview-body">
+                    <div class="overview-body-text">
+                        <p class="overview-act-name">Act 4 — The Confrontation</p>
+                        <p class="overview-act-mode">Whole Room</p>
+                    </div>
+                    <span class="overview-time">12:35 – 1:00</span>
+                </div>
+            </div>
+            <div class="overview-row">
+                <div class="overview-accent" style="background:var(--amber);"></div>
+                <div class="overview-body">
+                    <div class="overview-body-text">
+                        <p class="overview-act-name">Act 5 — Commit + Close</p>
+                        <p class="overview-act-mode">Individual → Room</p>
+                    </div>
+                    <span class="overview-time">1:00 – 1:30</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PREFACE SLIDES — Shared Language
+    ══════════════════════════════════════ -->
+
+    <!-- PREFACE 1 — Chapter marker -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:space-around;padding:0 8vw;box-sizing:border-box;">
+            <div style="flex:1;display:flex;flex-direction:column;gap:0.5rem;">
+                <p style="font-family:'Space Mono',monospace;font-size:0.7rem;color:#4a6880;letter-spacing:0.15em;text-transform:uppercase;margin:0;">Two frameworks</p>
+                <h2 style="font-family:'Space Mono',monospace;font-size:clamp(2rem,6vw,5rem);font-weight:700;color:#fff;line-height:1.1;margin:0;">STRUCTURED<br>TEACHING</h2>
+            </div>
+            <div style="width:2px;height:40%;background:rgba(255,255,255,0.1);flex-shrink:0;"></div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+                <h2 style="font-family:'Space Mono',monospace;font-size:clamp(2rem,6vw,5rem);font-weight:700;color:rgba(255,255,255,0.35);margin:0;">UDL</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 2 — Structured Teaching anchor phrase -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="max-width:96%;width:96%;display:flex;flex-direction:column;gap:2.5rem;align-items:center;z-index:1;position:relative;">
+            <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#4a6880;letter-spacing:0.2em;text-transform:uppercase;margin:0;">Structured Teaching</p>
+            <p style="font-size:clamp(2rem,5vw,3.8rem);color:#fff;font-weight:700;line-height:1.25;text-align:center;margin:0;">"When the structure does the communicating."</p>
+            <p style="font-size:clamp(0.9rem,1.8vw,1.1rem);color:rgba(255,255,255,0.3);text-align:center;margin:0;font-style:italic;">The environment answers the questions before the student has to ask them.</p>
+        </div>
+    </div>
+
+    <!-- PREFACE 3 — Structured Teaching four elements -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="width:94%;max-width:1200px;display:flex;flex-direction:column;gap:2rem;z-index:1;position:relative;">
+            <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#4a6880;letter-spacing:0.2em;text-transform:uppercase;margin:0;text-align:center;">Structured Teaching — four elements</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
+                <div style="background:rgba(74,104,128,0.15);border-left:4px solid #4a6880;border-radius:0 12px 12px 0;padding:1.6rem 2rem;">
+                    <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:#7aaccc;margin:0 0 0.6rem;letter-spacing:0.1em;">01</p>
+                    <p style="font-weight:700;color:#fff;margin:0;font-size:clamp(1.1rem,2.2vw,1.5rem);">Physical structure</p>
+                </div>
+                <div style="background:rgba(74,104,128,0.15);border-left:4px solid #4a6880;border-radius:0 12px 12px 0;padding:1.6rem 2rem;">
+                    <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:#7aaccc;margin:0 0 0.6rem;letter-spacing:0.1em;">02</p>
+                    <p style="font-weight:700;color:#fff;margin:0;font-size:clamp(1.1rem,2.2vw,1.5rem);">Schedules</p>
+                </div>
+                <div style="background:rgba(74,104,128,0.15);border-left:4px solid #4a6880;border-radius:0 12px 12px 0;padding:1.6rem 2rem;">
+                    <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:#7aaccc;margin:0 0 0.6rem;letter-spacing:0.1em;">03</p>
+                    <p style="font-weight:700;color:#fff;margin:0;font-size:clamp(1.1rem,2.2vw,1.5rem);">Work systems</p>
+                </div>
+                <div style="background:rgba(74,104,128,0.15);border-left:4px solid #4a6880;border-radius:0 12px 12px 0;padding:1.6rem 2rem;">
+                    <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:#7aaccc;margin:0 0 0.6rem;letter-spacing:0.1em;">04</p>
+                    <p style="font-weight:700;color:#fff;margin:0;font-size:clamp(1.1rem,2.2vw,1.5rem);">Task organisation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 4 — Chapter marker (UDL) -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:space-around;padding:0 8vw;box-sizing:border-box;">
+            <div style="flex:1;display:flex;flex-direction:column;gap:0.5rem;">
+                <h2 style="font-family:'Space Mono',monospace;font-size:clamp(2rem,6vw,5rem);font-weight:700;color:rgba(255,255,255,0.35);line-height:1.1;margin:0;">STRUCTURED<br>TEACHING</h2>
+            </div>
+            <div style="width:2px;height:40%;background:rgba(255,255,255,0.1);flex-shrink:0;"></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
+                <p style="font-family:'Space Mono',monospace;font-size:0.7rem;color:#9090c0;letter-spacing:0.15em;text-transform:uppercase;margin:0;">Two frameworks</p>
+                <h2 style="font-family:'Space Mono',monospace;font-size:clamp(2rem,6vw,5rem);font-weight:700;color:#fff;margin:0;">UDL</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 5 — UDL anchor phrase -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="max-width:96%;width:96%;display:flex;flex-direction:column;gap:1.8rem;align-items:center;z-index:1;position:relative;">
+            <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#9090c0;letter-spacing:0.2em;text-transform:uppercase;margin:0;">Universal Design for Learning</p>
+            <div style="display:flex;flex-direction:column;gap:0.6rem;text-align:center;">
+                <p style="font-size:clamp(1.8rem,4.5vw,3.5rem);color:#fff;font-weight:700;line-height:1.2;margin:0;">There is no average student.</p>
+                <p style="font-size:clamp(1.8rem,4.5vw,3.5rem);color:rgba(255,255,255,0.6);font-weight:700;line-height:1.2;margin:0;">Every learner is a range.</p>
+                <p style="font-size:clamp(1.8rem,4.5vw,3.5rem);color:#9090c0;font-weight:700;line-height:1.2;margin:0;">Design to the edges.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 6 — Architecture image -->
+    <div class="slide" style="background:#0a0a14;" data-act="Preface">
+        <div style="position:relative;width:85%;max-width:1000px;border-radius:16px;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,0.6);">
+            <img src="assets/Singapore.jpeg" alt="Universal design in architecture — multiple access routes built in from the start" style="width:100%;display:block;max-height:70vh;object-fit:cover;">
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.5rem;background:linear-gradient(transparent, rgba(0,0,0,0.8));">
+                <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:rgba(255,255,255,0.6);margin:0;">Universal design in the built environment — multiple access routes built in from the start, not added as afterthoughts</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 7 — Ramp cartoon -->
+    <div class="slide" style="background:#0a0a14;" data-act="Preface">
+        <div style="position:relative;max-width:700px;border-radius:16px;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,0.6);">
+            <img src="assets/Cartoon.png" alt="Cartoon: shovel the ramp and we can all get in" style="width:100%;display:block;max-height:75vh;object-fit:contain;">
+        </div>
+    </div>
+
+    <!-- PREFACE 8 — UDL three principles -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="max-width:96%;width:96%;display:flex;flex-direction:column;gap:1.5rem;z-index:1;position:relative;">
+            <h2 style="font-family:'Space Mono',monospace;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;color:#fff;margin:0;text-align:center;">UDL — Three Principles</h2>
+            <img src="assets/UDL.jpeg" alt="UDL three principles: Engagement (WHY), Representation (WHAT), Action and Expression (HOW)" style="width:100%;border-radius:12px;max-height:55vh;object-fit:contain;">
+        </div>
+    </div>
+
+    <!-- PREFACE 9 — Knowledge vs uncertainty -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="display:flex;flex-direction:column;width:100%;height:100%;align-items:center;justify-content:center;gap:0;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:90%;gap:1rem;">
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.7rem,1.2vw,0.9rem);color:#7aaccc;letter-spacing:0.15em;text-transform:uppercase;margin:0;">Structured Teaching</p>
+                <p style="font-size:clamp(2rem,5.5vw,4.5rem);color:#fff;font-weight:700;line-height:1.2;text-align:center;margin:0;">Knowledge-dependent.</p>
+                <p style="font-size:clamp(1rem,2vw,1.4rem);color:rgba(255,255,255,0.5);text-align:center;margin:0;line-height:1.6;">The better you know the student, the better the structure you build for them.</p>
+            </div>
+            <div style="width:70%;height:1px;background:rgba(255,255,255,0.12);flex-shrink:0;"></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:90%;gap:1rem;">
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.7rem,1.2vw,0.9rem);color:#9090c0;letter-spacing:0.15em;text-transform:uppercase;margin:0;">Universal Design for Learning</p>
+                <p style="font-size:clamp(2rem,5.5vw,4.5rem);color:#fff;font-weight:700;line-height:1.2;text-align:center;margin:0;">Uncertainty-tolerant.</p>
+                <p style="font-size:clamp(1rem,2vw,1.4rem);color:rgba(255,255,255,0.5);text-align:center;margin:0;line-height:1.6;">It builds in options to catch what you didn't anticipate — including paths you didn't design for.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 10 — Comparison chapter marker -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:space-around;padding:0 8vw;box-sizing:border-box;">
+            <div style="flex:1;display:flex;flex-direction:column;gap:0.5rem;">
+                <h2 style="font-family:'Space Mono',monospace;font-size:clamp(2rem,6vw,5rem);font-weight:700;color:#fff;line-height:1.1;margin:0;">STRUCTURED<br>TEACHING</h2>
+            </div>
+            <div style="flex-shrink:0;padding:0 2rem;">
+                <div style="width:1px;height:160px;background:rgba(255,255,255,0.15);"></div>
+            </div>
+            <div style="flex:1;display:flex;justify-content:flex-end;">
+                <h2 style="font-family:'Space Mono',monospace;font-size:clamp(2rem,6vw,5rem);font-weight:700;color:#fff;margin:0;">UDL</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREFACE 11 — Comparison table -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="width:96%;max-width:1400px;z-index:1;position:relative;">
+            <table style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding:1.2rem 1.6rem;text-align:left;width:22%;border-bottom:2px solid rgba(255,255,255,0.15);"></th>
+                        <th style="padding:1.2rem 1.6rem;text-align:center;color:#7aaccc;font-family:'Space Mono',monospace;font-size:clamp(0.7rem,1.2vw,0.9rem);font-weight:700;letter-spacing:0.08em;border-bottom:2px solid rgba(255,255,255,0.15);width:39%;">STRUCTURED TEACHING</th>
+                        <th style="padding:1.2rem 1.6rem;text-align:center;color:#9090c0;font-family:'Space Mono',monospace;font-size:clamp(0.7rem,1.2vw,0.9rem);font-weight:700;letter-spacing:0.08em;border-bottom:2px solid rgba(255,255,255,0.15);width:39%;">UNIVERSAL DESIGN FOR LEARNING</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.5);font-weight:700;font-size:clamp(0.85rem,1.4vw,1.05rem);">Origin</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">Autism-specific</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">Mainstream education</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);">
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.5);font-weight:700;font-size:clamp(0.85rem,1.4vw,1.05rem);">Starting Point</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">The individual student's profile</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">The range of learners in a group</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.5);font-weight:700;font-size:clamp(0.85rem,1.4vw,1.05rem);">Primary Tool</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">The environment and its physical/visual predictability</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">The design of the learning experience itself</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);">
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.5);font-weight:700;font-size:clamp(0.85rem,1.4vw,1.05rem);">View of Flexibility</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">Consistency and predictability is the support</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">Flexibility and choice is the support</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.5);font-weight:700;font-size:clamp(0.85rem,1.4vw,1.05rem);">Relationship to Routine</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">Routine reduces cognitive load</td>
+                        <td style="padding:1.1rem 1.6rem;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,1.5vw,1.1rem);text-align:center;">Routine can become a barrier</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PREFACE 12 — Synthesis statement -->
+    <div class="slide" style="background:#0f0f1a;" data-act="Preface">
+        <div style="max-width:96%;width:96%;display:flex;flex-direction:column;gap:2.5rem;align-items:center;z-index:1;position:relative;">
+            <h2 style="font-family:'Space Mono',monospace;font-size:clamp(1.2rem,3vw,2rem);font-weight:700;color:#fff;margin:0;text-align:center;">UDL</h2>
+            <div style="background:rgba(232,197,71,0.12);border:2px solid rgba(232,197,71,0.4);border-radius:12px;padding:1.8rem 2.5rem;text-align:center;">
+                <p style="font-size:clamp(1.1rem,2.5vw,1.7rem);color:#e8c547;font-weight:600;line-height:1.5;margin:0;">Universal Design for Learning is a design philosophy for human variability.</p>
+            </div>
+            <p style="font-size:clamp(0.9rem,1.8vw,1.1rem);color:rgba(255,255,255,0.5);text-align:center;margin:0;font-style:italic;">Both frameworks say: when it isn't working, change the environment — not the child.</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 2 — Act 1 title
+    ══════════════════════════════════════ -->
+    <div class="slide glow-lavender" data-act="Act 1">
+        <div class="act-card-inner">
+            <span class="act-pill" style="background:var(--lavender-deep);">Act 1</span>
+            <div class="act-big-num" style="font-size:clamp(6rem,20vw,16rem);color:rgba(107,107,157,0.2);">1</div>
+            <p class="act-name" style="color:var(--lavender);">The Mirror</p>
+            <p class="act-timing">10:15 – 10:45 &nbsp;·&nbsp; 30 minutes &nbsp;·&nbsp; Individual → Whole Room</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 3 — The shared lesson
+    ══════════════════════════════════════ -->
+    <div class="slide glow-lavender" data-act="Act 1">
+        <p class="eyebrow" style="position:relative;z-index:1;">Today's Design Object</p>
+        <div class="lesson-display">
+            <p class="lesson-kla">Science — Biological Sciences</p>
+            <p class="lesson-title">Living and Non-Living Things</p>
+            <p class="lesson-body">Students distinguish between living and non-living things — sorting examples, identifying what makes something alive, and explaining their reasoning in whatever way best demonstrates their understanding.</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 4 — UDL: Three Principles
+    ══════════════════════════════════════ -->
+    <div class="slide glow-lavender" data-act="Act 1">
+        <p class="eyebrow" style="position:relative;z-index:1;">Universal Design for Learning</p>
+        <div class="udl-three">
+
+            <div class="udl-col" style="background:rgba(107,107,157,0.12);border:1px solid rgba(107,107,157,0.18);">
+                <span class="udl-col-bg-num" style="color:var(--lavender-deep);">1</span>
+                <p class="udl-col-label">Principle 1</p>
+                <p class="udl-col-title">Engagement</p>
+                <p class="udl-col-q">"Why should I care about this learning?"</p>
+                <ul class="udl-col-points">
+                    <li>Multiple ways to be motivated</li>
+                    <li>Connection to real purpose</li>
+                    <li>Choice in how to engage</li>
+                    <li>Sustained interest and effort</li>
+                </ul>
+            </div>
+
+            <div class="udl-col" style="background:rgba(90,126,194,0.1);border:1px solid rgba(90,126,194,0.18);">
+                <span class="udl-col-bg-num" style="color:var(--snes-blue);">2</span>
+                <p class="udl-col-label">Principle 2</p>
+                <p class="udl-col-title">Representation</p>
+                <p class="udl-col-q">"How can I access and understand this?"</p>
+                <ul class="udl-col-points">
+                    <li>Multiple formats for content</li>
+                    <li>Visual, auditory, tactile options</li>
+                    <li>Language that doesn't exclude</li>
+                    <li>Background knowledge activated</li>
+                </ul>
+            </div>
+
+            <div class="udl-col" style="background:rgba(90,185,122,0.08);border:1px solid rgba(90,185,122,0.15);">
+                <span class="udl-col-bg-num" style="color:var(--snes-green);">3</span>
+                <p class="udl-col-label">Principle 3</p>
+                <p class="udl-col-title">Expression</p>
+                <p class="udl-col-q">"How can I show what I know?"</p>
+                <ul class="udl-col-points">
+                    <li>Multiple ways to demonstrate learning</li>
+                    <li>Format doesn't obscure understanding</li>
+                    <li>Student agency in response mode</li>
+                    <li>Real evidence of real understanding</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 5 — Act 1 activity
+    ══════════════════════════════════════ -->
+    <div class="slide glow-lavender" data-act="Act 1">
+        <p class="eyebrow" style="position:relative;z-index:1;">Table Discussion — Act 1</p>
+        <div class="activity-card">
+            <div class="step">
+                <span class="step-num">01</span>
+                <span>
+                    <strong>How would you design this lesson for your students?</strong><br>
+                    Draft your approach at the table. What would it actually look like?<br>
+                    <em style="color:rgba(255,255,255,0.4);">5 min</em>
+                </span>
+            </div>
+            <div class="step">
+                <span class="step-num">02</span>
+                <span>
+                    <strong>Who does this design serve well?</strong><br>
+                    Which students in your class would thrive in what you just described?<br>
+                    <em style="color:rgba(255,255,255,0.4);">2 min</em>
+                </span>
+            </div>
+            <div class="step">
+                <span class="step-num">03</span>
+                <span>
+                    <strong>Who might find this harder?</strong><br>
+                    Who is at the edges of what it reaches?<br>
+                    <em style="color:rgba(255,255,255,0.4);">3 min</em><br>
+                    <a href="https://tools.theuniversalsandpit.org/bias-scanner" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;font-family:'Space Mono',monospace;font-size:clamp(0.75rem,1.3vw,1rem);font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;background:rgba(144,144,192,0.2);border:1px solid rgba(144,144,192,0.5);border-radius:6px;padding:7px 16px;text-decoration:none;">Optional → UDL Bias Scanner</a>
+                </span>
+            </div>
+            <div class="step">
+                <span class="step-num">04</span>
+                <span>
+                    <strong>Whole-room harvest.</strong><br>
+                    One observation per table.<br>
+                    <em style="color:rgba(255,255,255,0.4);">5 min</em>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 7 — Act 2 title
+    ══════════════════════════════════════ -->
+    <div class="slide glow-blue" data-act="Act 2">
+        <div class="act-card-inner">
+            <span class="act-pill" style="background:var(--snes-blue);">Act 2</span>
+            <div class="act-big-num" style="font-size:clamp(6rem,20vw,16rem);color:rgba(90,126,194,0.2);">2</div>
+            <p class="act-name" style="color:var(--snes-blue);">The Analysis</p>
+            <p class="act-timing">10:45 – 11:25 &nbsp;·&nbsp; 40 minutes &nbsp;·&nbsp; Table Teams</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 8 — The students
+    ══════════════════════════════════════ -->
+    <div class="slide glow-blue" data-act="Act 2">
+        <p class="eyebrow" style="position:relative;z-index:1;">/// The Students</p>
+        <div class="persona-four">
+
+            <div class="p-card">
+                <div class="p-top" style="background:var(--snes-blue);"></div>
+                <div class="p-body">
+                    <p class="p-name">Malcolm</p>
+                    <p class="p-age">Age 6</p>
+                    <div class="p-traits">
+                        <span class="p-trait">AAC / PECS</span>
+                        <span class="p-trait">1:1 support</span>
+                        <span class="p-trait">Fine motor challenges</span>
+                        <span class="p-trait">Responds to photos</span>
+                    </div>
+                    <p class="p-desc">Communicates via AAC and PECS. Responds well to photographs of real objects. Fine motor tasks are difficult without significant support.</p>
+                </div>
+            </div>
+
+            <div class="p-card">
+                <div class="p-top" style="background:var(--snes-green);"></div>
+                <div class="p-body">
+                    <p class="p-name">Sally</p>
+                    <p class="p-age">Age 9</p>
+                    <div class="p-traits">
+                        <span class="p-trait">Age-level reader</span>
+                        <span class="p-trait">Tactile learner</span>
+                        <span class="p-trait">Anxiety: unclear tasks</span>
+                        <span class="p-trait">Visual schedule user</span>
+                    </div>
+                    <p class="p-desc">Works independently when expectations are clear. Prefers hands-on, tactile experiences. Becomes anxious when task demands are ambiguous.</p>
+                </div>
+            </div>
+
+            <div class="p-card">
+                <div class="p-top" style="background:var(--snes-red);"></div>
+                <div class="p-body">
+                    <p class="p-name">Priya</p>
+                    <p class="p-age">Age 13</p>
+                    <div class="p-traits">
+                        <span class="p-trait">Significant vision impairment</span>
+                        <span class="p-trait">Auditory learner</span>
+                        <span class="p-trait">Science interest</span>
+                        <span class="p-trait">Difficulty expressing</span>
+                    </div>
+                    <p class="p-desc">Prefers to receive information through listening. Strong science interest, particularly space. Often finds it difficult to demonstrate what she has understood.</p>
+                </div>
+            </div>
+
+            <div class="p-card">
+                <div class="p-top" style="background:var(--amber);"></div>
+                <div class="p-body">
+                    <p class="p-name">Lachlan</p>
+                    <p class="p-age">Age 15</p>
+                    <div class="p-traits">
+                        <span class="p-trait">Co-occurring ADHD</span>
+                        <span class="p-trait">Needs relevance</span>
+                        <span class="p-trait">Real-world application</span>
+                        <span class="p-trait">Disengages quickly</span>
+                    </div>
+                    <p class="p-desc">Needs to understand why a task matters before investing. Disengages when learning feels arbitrary. Works best with clear, meaningful application.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 9 — Round 1: The Stuck Moment
+    ══════════════════════════════════════ -->
+    <div class="slide glow-blue" data-act="Act 2 — Round 1">
+        <div class="constraint-reveal" style="--accent:#5a7ec2;">
+            <span class="act-pill" style="background:var(--snes-blue);margin-bottom:16px;">Round 1 — The Stuck Moment</span>
+            <p class="constraint-label-sm" style="color:var(--snes-blue);">Your table takes one or two students</p>
+            <p class="constraint-text-big" style="color:#fff;">Find the single moment they get stuck.</p>
+            <p class="constraint-task">Not a general critique — a precise moment, a precise reason.</p>
+            <div style="background:rgba(90,126,194,0.1);border:1px solid rgba(90,126,194,0.25);border-radius:12px;padding:1.2rem 2rem;margin-bottom:1.5rem;max-width:80%;">
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.9rem,1.8vw,1.2rem);color:rgba(255,255,255,0.7);font-style:italic;margin:0;text-align:center;">"Malcolm gets stuck here, because the lesson assumes he can..."</p>
+            </div>
+            <div class="timer-widget" data-seconds="600" data-color="#5a7ec2">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5a7ec2">10:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#5a7ec2;border-color:#5a7ec2;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+        <div style="position:absolute;bottom:36px;right:44px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1;">
+            <img src="assets/Act 2.png" alt="Padlet QR code" style="width:clamp(90px,11vw,140px);height:clamp(90px,11vw,140px);border-radius:10px;display:block;">
+            <p style="font-family:'Space Mono',monospace;font-size:clamp(0.5rem,0.85vw,0.7rem);color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase;margin:0;text-align:center;">Scan to contribute<br>on Padlet</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 10 — Round 2: The Assumption Hunt
+    ══════════════════════════════════════ -->
+    <div class="slide glow-blue" data-act="Act 2 — Round 2">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--snes-blue);margin-bottom:16px;">Round 2 — The Assumption Hunt</span>
+            <p class="constraint-label-sm" style="color:var(--snes-blue);">Now flip it</p>
+            <p class="constraint-text-big" style="color:#fff;">What did the lesson design take for granted?</p>
+            <p class="constraint-task">The critique stays on the design, not the student.</p>
+            <div style="background:rgba(90,126,194,0.1);border:1px solid rgba(90,126,194,0.25);border-radius:12px;padding:1.2rem 2rem;margin-bottom:1.5rem;max-width:80%;">
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.9rem,1.8vw,1.2rem);color:rgba(255,255,255,0.7);font-style:italic;margin:0;text-align:center;">"This lesson was designed for a student who already knows how to..."</p>
+            </div>
+            <div class="timer-widget" data-seconds="600" data-color="#5a7ec2">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5a7ec2">10:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#5a7ec2;border-color:#5a7ec2;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+        <div style="position:absolute;bottom:36px;right:44px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1;">
+            <img src="assets/Act 2.png" alt="Padlet QR code" style="width:clamp(90px,11vw,140px);height:clamp(90px,11vw,140px);border-radius:10px;display:block;">
+            <p style="font-family:'Space Mono',monospace;font-size:clamp(0.5rem,0.85vw,0.7rem);color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase;margin:0;text-align:center;">Scan to contribute<br>on Padlet</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 11 — Round 3: The Pattern
+    ══════════════════════════════════════ -->
+    <div class="slide glow-blue" data-act="Act 2 — Round 3">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--snes-blue);margin-bottom:16px;">Round 3 — The Pattern</span>
+            <p class="constraint-label-sm" style="color:var(--snes-blue);">Step back from your individual students</p>
+            <p class="constraint-text-big" style="color:#fff;">What do the assumptions have in common?</p>
+            <p class="constraint-task">Is there something this lesson assumes about <em style="color:rgba(255,255,255,0.7);font-style:normal;">all</em> learners — a single structural assumption causing multiple students to get stuck?</p>
+            <div style="background:rgba(90,126,194,0.1);border:1px solid rgba(90,126,194,0.25);border-radius:12px;padding:1.2rem 2rem;margin-bottom:1.5rem;max-width:80%;">
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.9rem,1.8vw,1.2rem);color:rgba(255,255,255,0.7);font-style:italic;margin:0;text-align:center;">"Every student at our table gets stuck at the same moment — because the lesson assumes..."</p>
+            </div>
+            <div class="timer-widget" data-seconds="600" data-color="#5a7ec2">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5a7ec2">10:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#5a7ec2;border-color:#5a7ec2;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+        <div style="position:absolute;bottom:36px;right:44px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1;">
+            <img src="assets/Act 2.png" alt="Padlet QR code" style="width:clamp(90px,11vw,140px);height:clamp(90px,11vw,140px);border-radius:10px;display:block;">
+            <p style="font-family:'Space Mono',monospace;font-size:clamp(0.5rem,0.85vw,0.7rem);color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase;margin:0;text-align:center;">Scan to contribute<br>on Padlet</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 12 — Share-back
+    ══════════════════════════════════════ -->
+    <div class="slide glow-blue" data-act="Act 2">
+        <p class="eyebrow" style="position:relative;z-index:1;">Share-back</p>
+        <p class="shareback-big">One pattern per table.</p>
+        <p style="font-size:clamp(0.9rem,1.6vw,1.1rem);color:rgba(255,255,255,0.3);text-align:center;position:relative;z-index:1;margin-top:8px;">The room builds a collective picture of what this lesson was designed for — and who it was designed by.</p>
+        <div class="timer-widget" data-seconds="60" data-color="#5a7ec2" style="margin-top:20px;">
+            <div class="t-ring-wrap">
+                <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                    <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                    <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                    <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5a7ec2">01:00</text>
+                </svg>
+            </div>
+            <div class="t-controls">
+                <button class="t-btn t-btn-start" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+            </div>
+        </div>
+        <div style="position:absolute;bottom:36px;right:44px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1;">
+            <img src="assets/Act 2.png" alt="Padlet QR code" style="width:clamp(90px,11vw,140px);height:clamp(90px,11vw,140px);border-radius:10px;display:block;">
+            <p style="font-family:'Space Mono',monospace;font-size:clamp(0.5rem,0.85vw,0.7rem);color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase;margin:0;text-align:center;">Scan to contribute<br>on Padlet</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 11 — Break
+    ══════════════════════════════════════ -->
+    <div class="slide" style="background:#0f0f18;" data-act="">
+        <p class="break-big">BREAK</p>
+        <p class="break-time-chip">20 minutes</p>
+        <p class="break-back">Back at 11:30</p>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 12 — Act 3 title + flow
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3">
+        <div class="act-card-inner">
+            <span class="act-pill" style="background:var(--snes-green);">Act 3</span>
+            <div class="act-big-num" style="font-size:clamp(5rem,16vw,12rem);color:rgba(90,185,122,0.2);">3</div>
+            <p class="act-name" style="color:var(--snes-green);">The Rebuild</p>
+            <p class="act-timing">11:45 – 12:35 &nbsp;·&nbsp; 50 minutes &nbsp;·&nbsp; Three rounds</p>
+        </div>
+        <div class="flow-row">
+            <div class="flow-seg flow-round"><span class="flow-seg-label">Round 1<br>Engagement</span><span class="flow-seg-time">15 min</span></div>
+            <div class="flow-seg flow-steal"><span class="flow-seg-label">Steal</span><span class="flow-seg-time">2 min</span></div>
+            <div class="flow-seg flow-round"><span class="flow-seg-label">Round 2<br>Representation</span><span class="flow-seg-time">15 min</span></div>
+            <div class="flow-seg flow-steal"><span class="flow-seg-label">Steal</span><span class="flow-seg-time">2 min</span></div>
+            <div class="flow-seg flow-round"><span class="flow-seg-label">Round 3<br>Expression</span><span class="flow-seg-time">15 min</span></div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — UDL Thinking Space
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2rem;z-index:1;position:relative;width:90%;max-width:860px;text-align:center;">
+            <p class="eyebrow">Your design companion for Act 3</p>
+            <p style="font-family:'Space Mono',monospace;font-size:clamp(1.6rem,4vw,3rem);font-weight:700;color:#fff;line-height:1.2;margin:0;">UDL Thinking Space</p>
+            <p style="font-size:clamp(1rem,1.8vw,1.3rem);color:rgba(255,255,255,0.5);line-height:1.65;margin:0;">Open this on your device. Use it alongside each round as a reference for UDL principles — Engagement, Representation, Expression — as you redesign.</p>
+            <div style="display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;justify-content:center;">
+                <a href="https://fieldnotes.theuniversalsandpit.org/udl-dashboard.html" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:clamp(0.8rem,1.4vw,1rem);font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;background:rgba(90,185,122,0.15);border:1px solid rgba(90,185,122,0.45);border-radius:10px;padding:14px 28px;text-decoration:none;">Open UDL Thinking Space →</a>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <img src="assets/qr-udl-thinking-space.png" alt="QR code — UDL Thinking Space" style="width:clamp(100px,12vw,150px);height:clamp(100px,12vw,150px);border-radius:10px;display:block;">
+                    <p style="font-family:'Space Mono',monospace;font-size:clamp(0.5rem,0.85vw,0.7rem);color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase;margin:0;text-align:center;">Or scan</p>
+                </div>
+            </div>
+            <p style="font-family:'Space Mono',monospace;font-size:clamp(0.6rem,1vw,0.78rem);color:rgba(255,255,255,0.2);letter-spacing:1px;margin:0;">fieldnotes.theuniversalsandpit.org/udl-dashboard.html</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 13 — Round 1: Engagement
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3 — Round 1">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--snes-green);margin-bottom:16px;">Round 1 — Engagement</span>
+            <p class="constraint-label-sm">Constraint</p>
+            <p class="constraint-text-big">"Every student must have a way in."</p>
+            <p class="constraint-task">Redesign how students enter this lesson. What draws them in, gives them a reason to start, and lowers the initial barrier — for all four students.</p>
+            <div class="timer-widget" data-seconds="900" data-color="#5ab97a">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5ab97a">15:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 14 — Steal 1
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3">
+        <div class="steal-card">
+            <span class="steal-icon-big">→</span>
+            <p class="steal-title-big">2-Minute Steal</p>
+            <p class="steal-desc-big">Look at what the table next to you built for Round 1. Take one idea — borrow it, adapt it, add it to your redesign.</p>
+            <div class="timer-widget" data-seconds="120" data-color="#5ab97a">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5ab97a">02:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 15 — Round 2: Representation
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3 — Round 2">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--snes-green);margin-bottom:16px;">Round 2 — Representation</span>
+            <p class="constraint-label-sm">Constraint</p>
+            <p class="constraint-text-big">"The content must reach every student."</p>
+            <p class="constraint-task">Redesign how students access the content. What else could carry the concept of living and non-living things to a learner who can't see, can't hold a card, or needs to hear it? Think about Malcolm, Sally, Priya and Lachlan specifically.</p>
+            <div class="timer-widget" data-seconds="900" data-color="#5ab97a">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5ab97a">15:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 16 — Steal 2
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3">
+        <div class="steal-card">
+            <span class="steal-icon-big">→</span>
+            <p class="steal-title-big">2-Minute Steal</p>
+            <p class="steal-desc-big">Look at what the table next to you built for Round 2. Take one idea — borrow it, adapt it, add it to your redesign.</p>
+            <div class="timer-widget" data-seconds="120" data-color="#5ab97a">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5ab97a">02:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 17 — Round 3: Expression
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3 — Round 3">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--snes-green);margin-bottom:16px;">Round 3 — Expression</span>
+            <p class="constraint-label-sm">Constraint</p>
+            <p class="constraint-text-big">"Every student must be able to show you what they know."</p>
+            <p class="constraint-task">Redesign how students show what they know. For each of the four students — what does genuine evidence of understanding look like when the mode of demonstration is no longer the obstacle?</p>
+            <div class="timer-widget" data-seconds="900" data-color="#5ab97a">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#5ab97a">15:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 18 — End of Rebuild
+    ══════════════════════════════════════ -->
+    <div class="slide glow-green" data-act="Act 3">
+        <p class="hold-text">You have rebuilt how students engage with it,<br>access it, and show what they know.</p>
+        <p class="hold-sub">Hold onto what you built. You'll need it in Act 4.</p>
+        <p class="hold-sub" style="margin-top:10px;font-size:clamp(0.9rem,1.6vw,1.1rem);color:rgba(255,255,255,0.25);">Don't tidy it up. The roughness is where the thinking lives.</p>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 19 — Act 4 title
+    ══════════════════════════════════════ -->
+    <div class="slide glow-red" data-act="Act 4">
+        <div class="act-card-inner">
+            <span class="act-pill" style="background:var(--snes-red);">Act 4</span>
+            <div class="act-big-num" style="font-size:clamp(6rem,20vw,16rem);color:rgba(214,74,74,0.2);">4</div>
+            <p class="act-name" style="color:var(--snes-red);">The Confrontation</p>
+            <p class="act-timing">12:35 – 1:00 &nbsp;·&nbsp; 25 minutes &nbsp;·&nbsp; Whole Room</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 20 — TEACCH and UDL
+    ══════════════════════════════════════ -->
+    <div class="slide glow-red" data-act="Act 4">
+        <p class="eyebrow" style="position:relative;z-index:1;">The Tension &nbsp;·&nbsp; 5 min</p>
+        <div class="tension-split">
+
+            <div class="tension-col">
+                <div class="tension-col-stripe" style="background:var(--snes-blue);"></div>
+                <p class="tension-col-eyebrow" style="padding-left:10px;">Structured Teaching</p>
+                <p class="tension-col-title" style="padding-left:10px;">What Structured Teaching offers</p>
+                <ul class="tension-list" style="padding-left:10px;">
+                    <li>Clear, predictable structure that reduces anxiety</li>
+                    <li>Visual supports that remove language as a barrier</li>
+                    <li>Defined tasks with a clear start, steps, and finish</li>
+                    <li>Reduced cognitive load — students know what's expected</li>
+                    <li>Routine as a scaffold for independence</li>
+                </ul>
+                <p class="teacch-def" style="padding-left:10px;">Structured Teaching (TEACCH): a structured approach emphasising routine, visual clarity, and defined task sequences — developed specifically for autistic learners.</p>
+            </div>
+
+            <div class="tension-col">
+                <div class="tension-col-stripe" style="background:var(--snes-red);"></div>
+                <p class="tension-col-eyebrow" style="padding-left:10px;">Universal Design for Learning</p>
+                <p class="tension-col-title" style="padding-left:10px;">What UDL asks us to add</p>
+                <ul class="tension-list" style="padding-left:10px;">
+                    <li>Multiple ways to enter the learning, not just one</li>
+                    <li>Content that can be accessed in more than one format</li>
+                    <li>Flexibility at the edges of a clear structure</li>
+                    <li>Student agency — some choice in how they engage</li>
+                    <li>Multiple ways to show understanding, not just one</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 21 — Bridge statement
+    ══════════════════════════════════════ -->
+    <div class="slide glow-red" data-act="Act 4">
+        <div style="max-width:96%;width:96%;display:flex;flex-direction:column;gap:3rem;align-items:center;z-index:1;position:relative;">
+            <p class="eyebrow" style="position:relative;z-index:1;">2 min</p>
+            <p style="font-size:clamp(1.6rem,4vw,3rem);color:#fff;font-weight:700;line-height:1.3;text-align:center;margin:0;">"Structured teaching honours what you know.<br>UDL honours what you don't."</p>
+            <div style="width:60px;height:1px;background:rgba(255,255,255,0.2);"></div>
+            <p style="font-size:clamp(0.95rem,1.8vw,1.2rem);color:rgba(255,255,255,0.45);text-align:center;line-height:1.7;margin:0;">These are not opposites. UDL does not ask you to remove structure.<br>It asks you to design structure so that <em>more students can enter it</em> —<br>including students you haven't fully read yet.</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Student Voice
+    ══════════════════════════════════════ -->
+    <div class="slide glow-red" data-act="Act 4">
+        <div style="max-width:96%;width:96%;display:flex;flex-direction:column;gap:2rem;align-items:center;z-index:1;position:relative;text-align:center;">
+            <p class="eyebrow">Table Discussion &nbsp;·&nbsp; 5 min</p>
+            <p style="font-size:clamp(1.6rem,4vw,3rem);color:#fff;font-weight:700;line-height:1.35;margin:0;">"How should we incorporate student voice into the co-design of our lessons?"</p>
+            <div style="width:60px;height:1px;background:rgba(255,255,255,0.15);"></div>
+            <p style="font-size:clamp(1rem,1.8vw,1.3rem);color:rgba(255,255,255,0.4);line-height:1.7;margin:0;">Then hold that question as you work through the audit.</p>
+        </div>
+        <div class="timer-widget" data-seconds="300" data-color="#d64a4a" style="margin-top:2rem;position:relative;z-index:1;">
+            <div class="t-ring-wrap">
+                <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                    <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                    <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                    <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#d64a4a">05:00</text>
+                </svg>
+            </div>
+            <div class="t-controls">
+                <button class="t-btn t-btn-start" style="color:#d64a4a;border-color:#d64a4a;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 22 — The Audit (table reflection)
+    ══════════════════════════════════════ -->
+    <div class="slide glow-red" data-act="Act 4">
+        <p class="eyebrow" style="position:relative;z-index:1;">Table Reflection &nbsp;·&nbsp; 8 min</p>
+        <ul class="audit-list">
+            <li class="audit-item"><span class="audit-dash">—</span><p>Where did you keep the structure? Was that the right call — and for which students?</p></li>
+            <li class="audit-item"><span class="audit-dash">—</span><p>Where did you change or remove something? What did you assume about your students when you made that decision?</p></li>
+            <li class="audit-item"><span class="audit-dash">—</span><p>Which of the four students is best served by your redesign — and which is still not reached?</p></li>
+            <li class="audit-item"><span class="audit-dash">—</span><p>Is there anything in your redesign that would create a new barrier for a student you weren't thinking about?</p></li>
+            <li class="audit-item"><span class="audit-dash">—</span><p>Where does your own teaching preference show up in what you built?</p></li>
+        </ul>
+        <div class="timer-widget" data-seconds="480" data-color="#d64a4a" style="margin-top:20px;">
+            <div class="t-ring-wrap">
+                <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                    <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                    <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                    <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#d64a4a">08:00</text>
+                </svg>
+            </div>
+            <div class="t-controls">
+                <button class="t-btn t-btn-start" style="color:#d64a4a;border-color:#d64a4a;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 23 — The Audit (whole-room share)
+    ══════════════════════════════════════ -->
+    <div class="slide glow-red" data-act="Act 4">
+        <p class="eyebrow" style="position:relative;z-index:1;">Whole-Room Share &nbsp;·&nbsp; 5 min</p>
+        <p class="shareback-big" style="color:#fff;">One observation from the audit.</p>
+        <p style="font-size:clamp(0.9rem,1.6vw,1.1rem);color:rgba(255,255,255,0.3);text-align:center;position:relative;z-index:1;margin-top:8px;">Not what you built well — what the audit revealed about what you assumed.</p>
+        <div class="timer-widget" data-seconds="480" data-color="#d64a4a" style="margin-top:20px;">
+            <div class="t-ring-wrap">
+                <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                    <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                    <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                    <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#d64a4a">05:00</text>
+                </svg>
+            </div>
+            <div class="t-controls">
+                <button class="t-btn t-btn-start" style="color:#d64a4a;border-color:#d64a4a;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 23 — Act 5 title
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5">
+        <div class="act-card-inner">
+            <span class="act-pill" style="background:var(--amber);">Act 5</span>
+            <div class="act-big-num" style="font-size:clamp(6rem,20vw,16rem);color:rgba(200,168,48,0.2);">5</div>
+            <p class="act-name" style="color:var(--amber);">Commit + Close</p>
+            <p class="act-timing">1:00 – 1:30 &nbsp;·&nbsp; Individual → Room</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Round 1: Reflect
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5 — Round 1">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--amber);margin-bottom:16px;">Round 1 — Reflect</span>
+            <p class="constraint-label-sm" style="color:var(--amber);">Individual (3 min) then table (5 min)</p>
+            <p class="constraint-text-big" style="color:#fff;">What has today made you question?</p>
+            <div style="background:rgba(200,168,48,0.1);border:1px solid rgba(200,168,48,0.3);border-radius:12px;padding:1.4rem 2rem;margin-bottom:1.5rem;max-width:86%;display:flex;flex-direction:column;gap:1rem;">
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.9rem,1.8vw,1.2rem);color:rgba(255,255,255,0.75);margin:0;">"One thing today has made you question about the way you currently plan or support learning."</p>
+                <div style="height:1px;background:rgba(255,255,255,0.1);"></div>
+                <p style="font-family:'Space Mono',monospace;font-size:clamp(0.9rem,1.8vw,1.2rem);color:rgba(255,255,255,0.75);margin:0;">"And one thing you'll do differently because of it."</p>
+            </div>
+            <div class="timer-widget" data-seconds="180" data-color="#c8a830">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#c8a830">03:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#c8a830;border-color:#c8a830;" onclick="timerToggle(this.closest('.timer-widget'))">START — Individual</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Round 1: Table
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5 — Round 1">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--amber);margin-bottom:16px;">Round 1 — Table Share</span>
+            <p class="constraint-label-sm" style="color:var(--amber);">5 min</p>
+            <p class="constraint-text-big" style="color:#fff;">Share with your table.</p>
+            <p class="constraint-task">What did others question that you didn't? What patterns do you notice across your table?</p>
+            <div class="timer-widget" data-seconds="300" data-color="#c8a830">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#c8a830">05:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#c8a830;border-color:#c8a830;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Round 2: The Question
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5 — Round 2">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--amber);margin-bottom:16px;">Round 2 — The Question</span>
+            <p class="constraint-label-sm" style="color:var(--amber);">Individual (3 min) then table (5 min)</p>
+            <p class="constraint-text-big" style="color:#fff;">Distil it into one question.</p>
+            <p class="constraint-task">Take your reflection from Round 1 and turn it into a single question you'll ask yourself before every lesson plan. Your table can help you sharpen it.</p>
+            <div class="timer-widget" data-seconds="180" data-color="#c8a830">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-normal" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#c8a830">03:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#c8a830;border-color:#c8a830;" onclick="timerToggle(this.closest('.timer-widget'))">START — Individual</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Round 2: Table
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5 — Round 2">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--amber);margin-bottom:16px;">Round 2 — Sharpen It</span>
+            <p class="constraint-label-sm" style="color:var(--amber);">5 min</p>
+            <p class="constraint-text-big" style="color:#fff;">Help each other sharpen the question.</p>
+            <p class="constraint-task">A good question should be useful every time — not just today. Is it specific enough to actually change something? Is it broad enough to apply across different lessons?</p>
+            <div class="timer-widget" data-seconds="300" data-color="#c8a830">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#c8a830">05:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#c8a830;border-color:#c8a830;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Round 3: Apply It
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5 — Round 3">
+        <div class="constraint-reveal">
+            <span class="act-pill" style="background:var(--amber);margin-bottom:16px;">Round 3 — Apply It</span>
+            <p class="constraint-label-sm" style="color:var(--amber);">Individual — 8 min</p>
+            <p class="constraint-text-big" style="color:#fff;">Use your question on something real.</p>
+            <p class="constraint-task">Think of a lesson or session you're planning or supporting next week. Ask your question. What changes? Even one small thing counts.</p>
+            <div class="timer-widget" data-seconds="480" data-color="#c8a830">
+                <div class="t-ring-wrap">
+                    <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                        <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                        <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                        <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#c8a830">08:00</text>
+                    </svg>
+                </div>
+                <div class="t-controls">
+                    <button class="t-btn t-btn-start" style="color:#c8a830;border-color:#c8a830;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                    <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE — Whole-Room Share
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5">
+        <p class="eyebrow" style="position:relative;z-index:1;">Whole-Room Share &nbsp;·&nbsp; 4 min</p>
+        <p class="shareback-big" style="color:var(--amber);">One question per table.<br>The one you'll actually use.</p>
+        <div class="timer-widget" data-seconds="240" data-color="#c8a830" style="margin-top:24px;">
+            <div class="t-ring-wrap">
+                <svg class="t-ring-svg t-large" viewBox="0 0 130 130" aria-hidden="true">
+                    <circle class="t-ring-track" cx="65" cy="65" r="55"/>
+                    <circle class="t-ring-fill"  cx="65" cy="65" r="55" transform="rotate(-90 65 65)"/>
+                    <text class="t-display-text" x="65" y="65" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#c8a830">04:00</text>
+                </svg>
+            </div>
+            <div class="t-controls">
+                <button class="t-btn t-btn-start" style="color:#c8a830;border-color:#c8a830;" onclick="timerToggle(this.closest('.timer-widget'))">START</button>
+                <button class="t-btn t-btn-reset" onclick="timerReset(this.closest('.timer-widget'))">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 25 — Closing
+    ══════════════════════════════════════ -->
+    <div class="slide glow-amber" data-act="Act 5">
+        <p class="closing-q">"Design is never finished.<br>It just gets closer to the range."</p>
+        <p class="closing-note">You came in with a lesson. You leave with a question.<br>That question is the work continuing.</p>
+        <p class="closing-footer">/// The Universal Sandpit — Aspect Hunter School — April 2026 ///</p>
+    </div>
+
+</div><!-- /deck -->
+
+<!-- Chrome -->
+<div class="progress-bar" id="progress"></div>
+<div class="slide-counter" id="counter"></div>
+<div class="act-indicator" id="actLabel"></div>
+<div class="nav-hint">← → space &nbsp;·&nbsp; Enter start/pause &nbsp;·&nbsp; R reset &nbsp;·&nbsp; F fullscreen</div>
+
+<div class="click-prev" onclick="prevSlide()" title="Previous"></div>
+<div class="click-next" onclick="nextSlide()" title="Next"></div>
+
+<script>
+    // ─── Timer System ────────────────────────────────────────────
+    const TIMER_CIRC = 2 * Math.PI * 55; // circumference for r=55 in viewBox coords
+    const timerStates = new Map();
+
+    function timerInit(widget) {
+        if (timerStates.has(widget)) return;
+        const seconds = parseInt(widget.dataset.seconds, 10);
+        const color   = widget.dataset.color || '#5ab97a';
+        const fill    = widget.querySelector('.t-ring-fill');
+        const text    = widget.querySelector('.t-display-text');
+        const startBtn = widget.querySelector('.t-btn-start');
+        fill.style.strokeDasharray  = TIMER_CIRC;
+        fill.style.strokeDashoffset = 0;
+        fill.style.stroke = color;
+        text.style.fill   = color;
+        startBtn.style.color = color;
+        timerStates.set(widget, { total: seconds, remaining: seconds, running: false, interval: null, color });
+    }
+
+    function timerRender(widget) {
+        const s = timerStates.get(widget);
+        if (!s) return;
+        const { remaining, total, running, color } = s;
+        const fill     = widget.querySelector('.t-ring-fill');
+        const text     = widget.querySelector('.t-display-text');
+        const startBtn = widget.querySelector('.t-btn-start');
+        const pct = total > 0 ? remaining / total : 0;
+
+        fill.style.strokeDashoffset = TIMER_CIRC * (1 - pct);
+
+        // Colour transitions: normal → amber under 25% → red under 10%
+        let col = color;
+        if (remaining === 0)   col = '#d64a4a';
+        else if (pct < 0.10)   col = '#d64a4a';
+        else if (pct < 0.25)   col = '#c8a830';
+        fill.style.stroke = col;
+        text.style.fill   = col;
+        startBtn.style.color = col;
+
+        const m   = Math.floor(remaining / 60);
+        const sec = remaining % 60;
+        text.textContent = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+
+        if (remaining === 0) {
+            startBtn.textContent = 'RESET';
+            widget.classList.add('t-done');
+            widget.classList.remove('t-urgent');
+        } else {
+            widget.classList.remove('t-done');
+            widget.classList.toggle('t-urgent', pct < 0.10);
+            startBtn.textContent = running ? 'PAUSE' : (remaining === total ? 'START' : 'RESUME');
+        }
+    }
+
+    function timerToggle(widget) {
+        const s = timerStates.get(widget);
+        if (!s) return;
+        if (s.remaining === 0) { timerReset(widget); return; }
+        if (s.running) {
+            clearInterval(s.interval);
+            s.running = false;
+        } else {
+            s.interval = setInterval(() => {
+                s.remaining = Math.max(0, s.remaining - 1);
+                timerRender(widget);
+                if (s.remaining === 0) { s.running = false; clearInterval(s.interval); }
+            }, 1000);
+            s.running = true;
+        }
+        timerRender(widget);
+    }
+
+    function timerReset(widget) {
+        const s = timerStates.get(widget);
+        if (!s) return;
+        if (s.interval) clearInterval(s.interval);
+        s.running   = false;
+        s.remaining = s.total;
+        // Snap ring back instantly, then re-enable transitions
+        const fill = widget.querySelector('.t-ring-fill');
+        fill.style.transition = 'none';
+        fill.style.strokeDashoffset = 0;
+        requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.transition = ''; }));
+        widget.classList.remove('t-done', 't-urgent');
+        timerRender(widget);
+    }
+
+    function timerPauseAll() {
+        timerStates.forEach((s, widget) => {
+            if (s.running) {
+                clearInterval(s.interval);
+                s.running = false;
+                timerRender(widget);
+            }
+        });
+    }
+
+    // ─── Slide Engine ────────────────────────────────────────────
+    let current = 0;
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total  = slides.length;
+
+    function showSlide(n) {
+        timerPauseAll();
+        slides[current].classList.remove('active');
+        current = ((n % total) + total) % total;
+        slides[current].classList.add('active');
+        document.getElementById('progress').style.width = (current / (total - 1) * 100) + '%';
+        document.getElementById('counter').textContent  = (current + 1) + ' / ' + total;
+        const act   = slides[current].dataset.act || '';
+        const label = document.getElementById('actLabel');
+        label.textContent = act;
+        label.style.color = actColor(act);
+    }
+
+    function actColor(act) {
+        if (act.includes('1')) return 'rgba(107,107,157,0.7)';
+        if (act.includes('2')) return 'rgba(90,126,194,0.7)';
+        if (act.includes('3')) return 'rgba(90,185,122,0.7)';
+        if (act.includes('4')) return 'rgba(214,74,74,0.7)';
+        if (act.includes('5')) return 'rgba(200,168,48,0.7)';
+        return 'rgba(255,255,255,0.2)';
+    }
+
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
+
+    document.addEventListener('keydown', e => {
+        if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); nextSlide(); }
+        if (['ArrowLeft', 'ArrowUp'].includes(e.key))          { e.preventDefault(); prevSlide(); }
+        if (e.key === 'Enter') {
+            const w = slides[current].querySelector('.timer-widget');
+            if (w) { e.preventDefault(); timerToggle(w); }
+        }
+        if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            const w = slides[current].querySelector('.timer-widget');
+            if (w) timerReset(w);
+        }
+        if (e.key === 'f' || e.key === 'F') {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+            else document.exitFullscreen();
+        }
+        if (e.key === 'Home') { e.preventDefault(); showSlide(0); }
+        if (e.key === 'End')  { e.preventDefault(); showSlide(total - 1); }
+    });
+
+    // Initialise all timer widgets, then show first slide
+    document.querySelectorAll('.timer-widget').forEach(w => timerInit(w));
+    showSlide(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Day in Plain Language — Craig's Briefing</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --snes-yellow: #e8c547;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --amber: #c8a830;
+            --text-dark: #2a2a3a;
+            --text-mid: #5a5a6a;
+            --text-light: #8a8a9a;
+            --glass-bg: rgba(255,255,255,0.88);
+            --glass-border: rgba(144,144,192,0.25);
+            --glass-shadow: rgba(107,107,157,0.12);
+            --page-bg: #f6f6fb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(circle at 8% 10%, rgba(144,144,192,0.14) 0%, transparent 50%),
+                radial-gradient(circle at 92% 85%, rgba(90,126,194,0.09) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 52px 24px 100px;
+            position: relative; z-index: 1;
+        }
+
+        /* ─── Back link ─── */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            color: var(--lavender-deep); letter-spacing: 1.5px; text-transform: uppercase;
+            text-decoration: none; margin-bottom: 44px; transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.65; }
+
+        /* ─── Header ─── */
+        .for-craig {
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--lavender); text-align: center; margin-bottom: 10px;
+        }
+        .page-title {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+            color: var(--text-dark); text-align: center; line-height: 1.3;
+            margin-bottom: 16px;
+        }
+        .page-intro {
+            max-width: 600px; margin: 0 auto 44px; text-align: center;
+            font-size: 15px; line-height: 1.8; color: var(--text-mid);
+        }
+
+        /* ─── Tab bar ─── */
+        .tab-bar {
+            display: flex; gap: 0;
+            border-radius: 12px; overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 2px 12px var(--glass-shadow);
+            margin-bottom: 36px;
+        }
+
+        .tab-btn {
+            flex: 1; padding: 14px 12px;
+            font-family: 'Space Mono', monospace; font-size: 11px;
+            font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+            background: rgba(255,255,255,0.7); color: var(--text-light);
+            border: none; cursor: pointer;
+            border-right: 1px solid var(--glass-border);
+            transition: background 0.2s, color 0.2s;
+            line-height: 1.4;
+        }
+        .tab-btn:last-child { border-right: none; }
+        .tab-btn:hover { background: rgba(255,255,255,0.95); color: var(--text-mid); }
+        .tab-btn.active {
+            background: var(--lavender-deep); color: #fff;
+        }
+
+        /* ─── Tab panels ─── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ─── Shared prose card ─── */
+        .prose-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px; border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 28px var(--glass-shadow);
+            padding: 36px 40px;
+            margin-bottom: 20px;
+        }
+
+        .prose-card p {
+            font-size: 16px; line-height: 1.85; color: var(--text-mid);
+            margin-bottom: 18px;
+        }
+        .prose-card p:last-child { margin-bottom: 0; }
+        .prose-card p strong { color: var(--text-dark); font-weight: 600; }
+        .prose-card p em { font-style: italic; }
+
+        .big-prose {
+            font-size: 19px; line-height: 1.75; color: var(--text-dark);
+            font-weight: 400; margin-bottom: 24px;
+        }
+
+        /* ─── Section label ─── */
+        .section-label {
+            font-family: 'Space Mono', monospace; font-size: 9px;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--lavender-deep); margin-bottom: 20px;
+        }
+
+        /* ─── Act blocks for Version 2 & 3 ─── */
+        .act-block {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px; border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 28px var(--glass-shadow);
+            overflow: hidden; margin-bottom: 16px;
+            position: relative;
+        }
+        .act-block::before {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+        }
+        .act-lavender::before { background: var(--lavender-deep); }
+        .act-blue::before     { background: var(--snes-blue); }
+        .act-green::before    { background: var(--snes-green); }
+        .act-red::before      { background: var(--snes-red); }
+        .act-amber::before    { background: var(--amber); }
+
+        .act-block-header {
+            padding: 18px 24px 14px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; align-items: baseline; gap: 14px;
+        }
+        .act-tag {
+            font-family: 'Space Mono', monospace; font-size: 9px;
+            font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 4px 10px; border-radius: 20px; color: #fff; flex-shrink: 0;
+        }
+        .tag-lavender { background: var(--lavender-deep); }
+        .tag-blue     { background: var(--snes-blue); }
+        .tag-green    { background: var(--snes-green); }
+        .tag-red      { background: var(--snes-red); }
+        .tag-amber    { background: var(--amber); }
+
+        .act-block-name {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: 1rem; color: var(--text-dark);
+        }
+        .act-block-timing {
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            color: var(--text-light); margin-left: auto; white-space: nowrap;
+        }
+
+        .act-block-body {
+            padding: 20px 24px 22px;
+        }
+        .act-block-body p {
+            font-size: 15px; line-height: 1.82; color: var(--text-mid);
+            margin-bottom: 14px;
+        }
+        .act-block-body p:last-child { margin-bottom: 0; }
+        .act-block-body p strong { color: var(--text-dark); font-weight: 600; }
+
+        /* ─── "Why" questions (Version 3) ─── */
+        .why-block {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px; border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 28px var(--glass-shadow);
+            overflow: hidden; margin-bottom: 16px;
+        }
+        .why-q {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: 0.95rem; color: var(--text-dark);
+            padding: 18px 24px 14px;
+            border-bottom: 1px solid var(--glass-border);
+            line-height: 1.4;
+        }
+        .why-a {
+            padding: 18px 24px 20px;
+        }
+        .why-a p {
+            font-size: 15px; line-height: 1.82; color: var(--text-mid);
+            margin-bottom: 12px;
+        }
+        .why-a p:last-child { margin-bottom: 0; }
+        .why-a p strong { color: var(--text-dark); font-weight: 600; }
+
+        /* ─── Version 1 special elements ─── */
+        .spine-statement {
+            font-family: 'Space Mono', monospace; font-weight: 700;
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-dark); line-height: 1.5;
+            padding: 28px 32px; margin-bottom: 20px;
+            background: var(--lavender-deep); border-radius: 16px; color: #fff;
+        }
+
+        .key-list {
+            list-style: none; display: flex; flex-direction: column; gap: 0;
+            margin-top: 4px;
+        }
+        .key-list li {
+            padding: 13px 0; border-top: 1px solid var(--glass-border);
+            display: flex; align-items: flex-start; gap: 14px;
+            font-size: 15px; color: var(--text-mid); line-height: 1.6;
+        }
+        .key-list li:last-child { border-bottom: 1px solid var(--glass-border); }
+        .key-list li::before {
+            content: "→"; font-family: 'Space Mono', monospace;
+            font-size: 11px; color: var(--lavender); flex-shrink: 0; padding-top: 2px;
+        }
+        .key-list li strong { color: var(--text-dark); font-weight: 600; }
+
+        /* ─── Through-line (V3) ─── */
+        .through-line {
+            margin-top: 8px;
+            background: var(--text-dark); border-radius: 16px;
+            padding: 32px 36px;
+        }
+        .through-line-label {
+            font-family: 'Space Mono', monospace; font-size: 9px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.35); margin-bottom: 14px;
+        }
+        .through-line-text {
+            font-size: 16px; color: rgba(255,255,255,0.75);
+            line-height: 1.85;
+        }
+        .through-line-text strong { color: #fff; font-weight: 600; }
+
+        /* ─── Footer ─── */
+        .footer {
+            text-align: center; margin-top: 56px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            color: var(--text-light); letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="facilitation-guide.html" class="back-link">← Back to facilitation guide</a>
+
+    <p class="for-craig">/// For Craig — before you go in</p>
+    <h1 class="page-title">The Day in Plain Language</h1>
+    <p class="page-intro">This session was built collaboratively, which means the architecture is solid but might not feel completely yours yet. Here's the same day in plain language — three levels of detail. Read whichever feels right for where you are.</p>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('v1', this)">The spine<br><span style="font-size:9px;opacity:0.7;font-weight:400;">One paragraph</span></button>
+        <button class="tab-btn" onclick="switchTab('v2', this)">Five moves<br><span style="font-size:9px;opacity:0.7;font-weight:400;">Act by act</span></button>
+        <button class="tab-btn" onclick="switchTab('v3', this)">The full logic<br><span style="font-size:9px;opacity:0.7;font-weight:400;">The why behind it</span></button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         VERSION 1 — The spine
+    ═══════════════════════════════════════════ -->
+    <div class="tab-panel active" id="panel-v1">
+
+        <div class="spine-statement">
+            You show a room of 80 people a lesson. You ask them to notice what it doesn't offer certain students. You give them constraints and ask them to fix it. Then — after they've built something — you show them the philosophical tension behind what they just did. Then each person leaves with one student's name in their head.
+        </div>
+
+        <div class="prose-card">
+            <p class="big-prose">That's the whole day. The rest is structure that serves that arc.</p>
+            <p>The lesson is the shared anchor — everyone works from the same material, so no one is defending their own classroom. The four student personas make the analysis specific and real. The constraints in the rebuild prevent the session from drifting into vague good intentions. The philosophy arrives late, in Act 4, because it lands differently when people see it in something they actually built. And the commitment at the end is a name, not a concept.</p>
+            <p>You're not trying to convert anyone. You're trying to make one thing land for each person in the room — something specific enough to take back to a real student on Tuesday.</p>
+        </div>
+
+        <div class="prose-card">
+            <p class="section-label">What makes each part work</p>
+            <ul class="key-list">
+                <li><strong>A shared lesson, not their own:</strong> removes defensiveness from the room before you've even said anything</li>
+                <li><strong>Analysis before redesign:</strong> slows the reflex to jump to solutions and builds shared language first</li>
+                <li><strong>Constraints in the hackathon:</strong> each constraint points directly at the tension the session is about — they're not arbitrary</li>
+                <li><strong>Philosophy after building:</strong> people see the TEACCH/UDL tension in their own choices, not as a lecture they can agree with and forget</li>
+                <li><strong>A name at the end:</strong> "I'll think more about this" is not a commitment — a student's name is</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         VERSION 2 — Five moves
+    ═══════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-v2">
+
+        <div class="act-block act-lavender">
+            <div class="act-block-header">
+                <span class="act-tag tag-lavender">Act 1</span>
+                <span class="act-block-name">The Mirror</span>
+                <span class="act-block-timing">10:00 – 10:30</span>
+            </div>
+            <div class="act-block-body">
+                <p>You open with the Living and Non-Living Things lesson displayed on screen. It's a real, working lesson — not a broken one — and that's deliberate. You're not asking people to find problems with someone's teaching. You're asking them to look at a lesson and think about what universal design makes possible.</p>
+                <p>People use the UDL Bias Scanner individually or in pairs. The scanner surfaces the assumptions built into the lesson's design — and it does that work so you don't have to. The room names its own assumptions. You just harvest them briefly and frame what UDL gives us as a response.</p>
+                <p>Your key move here: <strong>plant the tension between structured teaching and universal design, but don't resolve it.</strong> Just name it. Say it'll come back later. Then move on.</p>
+            </div>
+        </div>
+
+        <div class="act-block act-blue">
+            <div class="act-block-header">
+                <span class="act-tag tag-blue">Act 2</span>
+                <span class="act-block-name">The Analysis</span>
+                <span class="act-block-timing">10:30 – 11:10</span>
+            </div>
+            <div class="act-block-body">
+                <p>You distribute four student personas — Henry (6), Mia (9), Priya (13), Lachlan (15). Every table works with all four students. The task is simple: what does this lesson not yet offer each of these students, and why?</p>
+                <p>The critical rule: <strong>analysis only — not redesign yet.</strong> This feels frustrating to some people, and that's good. The frustration means the reflex to solve is alive. Holding the room at analysis for a full 40 minutes means that when redesign comes in Act 3, everyone has richer shared language about the actual problem.</p>
+                <p>Share-back is fast — 60 seconds per table. You harvest onto a shared display. The room starts to build collective knowledge, not parallel islands.</p>
+            </div>
+        </div>
+
+        <div class="act-block act-green">
+            <div class="act-block-header">
+                <span class="act-tag tag-green">Act 3</span>
+                <span class="act-block-name">The Rebuild</span>
+                <span class="act-block-timing">11:30 – 12:20</span>
+            </div>
+            <div class="act-block-body">
+                <p>Three rounds of 15 minutes. Round 1 redesigns <strong>engagement</strong> — how students enter the lesson. Round 2 redesigns <strong>representation</strong> — how they access the content. Round 3 redesigns <strong>expression</strong> — how they show what they know.</p>
+                <p>Each round has a constraint displayed on screen. "The structure must remain." "No new worksheets." "The student must show you something real." These constraints aren't arbitrary — each one forces engagement with the exact tension the session is exploring. Between rounds, a 2-minute steal: each table looks at what the adjacent table built and takes one idea. This is how cross-pollination happens without losing momentum.</p>
+                <p>By the end of Act 3, every table has redesigned the same lesson three times over. Tell them to hold onto it. They'll need it in Act 4.</p>
+            </div>
+        </div>
+
+        <div class="act-block act-red">
+            <div class="act-block-header">
+                <span class="act-tag tag-red">Act 4</span>
+                <span class="act-block-name">The Confrontation</span>
+                <span class="act-block-timing">12:20 – 12:45</span>
+            </div>
+            <div class="act-block-body">
+                <p>This is the philosophical centrepiece of the day — and the timing is everything. You introduce the TEACCH/UDL tension explicitly <strong>after</strong> they've built a redesign, not before. Why? Because if you name the tension at the start, people defend their practice. But if they've already built something and you ask them to hold it up against structured teaching principles, they see the tension in their own choices. That's a different kind of learning.</p>
+                <p>You name the position clearly: these are not opposites. UDL doesn't ask you to remove structure — it asks you to design structure so that more students can enter it. Then you ask five audit questions. People look at their own redesigns and find their own assumptions.</p>
+                <p>This is the moment that makes the day memorable. Hold it.</p>
+            </div>
+        </div>
+
+        <div class="act-block act-amber">
+            <div class="act-block-header">
+                <span class="act-tag tag-amber">Act 5</span>
+                <span class="act-block-name">Commit + Close</span>
+                <span class="act-block-timing">12:45 – 1:30</span>
+            </div>
+            <div class="act-block-body">
+                <p>One student. One change. One tool. The specificity is the whole point. "I'll think more about this" is not a commitment. A name is a commitment. You give people a moment of quiet to identify their three things, then offer the room a chance to share one — just one, just if something came up that felt worth saying aloud.</p>
+                <p>You close with a human story — the same student you introduced at the opening of Act 1, this time with a resolution. Then you ask the same question you started with: <strong>"Which student are you thinking about right now?"</strong> But now it's answered. That's the shift — from designing for the average student, to designing for the one in front of you.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         VERSION 3 — The full logic
+    ═══════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-v3">
+
+        <div class="why-block">
+            <p class="why-q">Why a shared lesson rather than asking people to reflect on their own?</p>
+            <div class="why-a">
+                <p>If you ask people to critically examine their own teaching on a professional development day, two things happen: the confident ones defend it, and the anxious ones go quiet. A shared lesson sidesteps that entirely. It's not about anyone's practice specifically — it's a common object the whole room can be honest about. You get the same intellectual work without the defensiveness.</p>
+                <p>The Living and Non-Living Things lesson was chosen deliberately. It's genuinely scalable — there's a version of it that every person in that room teaches, from Year 1 through to senior secondary, and it's a lesson that works well in structured autism education settings. It's not a trick. It's a real lesson that already does a lot of things right. That matters: you're not asking people to criticise something bad. You're asking them to see what universal design makes possible in something already good.</p>
+            </div>
+        </div>
+
+        <div class="why-block">
+            <p class="why-q">Why does the analysis have to come before redesign, and why does it take 40 minutes?</p>
+            <div class="why-a">
+                <p>Teachers — especially experienced ones — have a fast, strong reflex to solve problems. The moment they see a challenge, they reach for a strategy. This is a feature, not a bug — it's what makes them effective in classrooms. But in a professional learning context, that reflex means they skip the step of actually understanding the problem before they try to fix it. They design for the student they're already thinking about. They don't build shared language.</p>
+                <p>Holding the room at analysis for a full 40 minutes feels uncomfortable — and that discomfort is the point. By the time Act 3 arrives, every table has spent real time inside the problem. When the hackathon begins, the redesigns are richer, more specific, and more honest about what the actual barriers are. The 40 minutes of analysis is what makes the 50 minutes of rebuilding worthwhile.</p>
+            </div>
+        </div>
+
+        <div class="why-block">
+            <p class="why-q">Why three constraints, and why those three specifically?</p>
+            <div class="why-a">
+                <p>Open-ended redesign in a group of 80 people with mixed experience and 15 minutes per round drifts fast. Without constraints, tables produce post-it notes that say "more visuals" and "differentiate" and "check in with students" — none of which require rethinking anything. Constraints force engagement.</p>
+                <p>But these aren't arbitrary constraints. <strong>"The structure must remain"</strong> forces people to think about flexibility-within-structure — the exact territory where TEACCH and UDL meet. You can't just remove the task analysis and call it UDL. <strong>"No new worksheets"</strong> breaks the default response to representation challenges (making a new differentiated worksheet) and forces genuine creativity about how content can be accessed. <strong>"The student must show you something real"</strong> cuts through the deeply embedded habit of assessing the format of the response rather than the learning underneath it. Each constraint is a pedagogical argument, not just a guardrail.</p>
+            </div>
+        </div>
+
+        <div class="why-block">
+            <p class="why-q">Why does the TEACCH/UDL tension arrive in Act 4 instead of Act 1?</p>
+            <div class="why-a">
+                <p>Philosophy without experience is ideology. If you open the day with "TEACCH and UDL have different assumptions about how learning should be structured," you get one of two responses: polite agreement from people who don't really engage with it, or defensive pushback from people who feel their practice is being challenged. Neither is useful.</p>
+                <p>But if people have spent two hours working intensely with four student personas, building redesigns that reflect their own instincts and assumptions — and then you ask them to hold that redesign up against structured teaching principles — the tension appears in their own work. They find it themselves. That's a fundamentally different experience from being told about it. The philosophy lands in the body, not just the head. It's also far more likely to last past Tuesday.</p>
+            </div>
+        </div>
+
+        <div class="why-block">
+            <p class="why-q">What if the room pushes back hard on UDL — "this doesn't work for our students"?</p>
+            <div class="why-a">
+                <p>That's fine. The session doesn't require anyone to agree that UDL is better than structured teaching. The position you're holding is clear and defensible: <strong>these are not opposites.</strong> UDL doesn't ask you to dismantle TEACCH. It asks you to design structure so that more students can enter it. Predictability can still be there. Visual supports can still be there. Clear task sequences can still be there. UDL asks: what happens at the edges? Who is the structure still excluding?</p>
+                <p>If someone says "my students need total structure and can't handle choices," the response is: I agree that some students need very defined structure. UDL asks whether that structure is designed only for the student you're imagining, or whether it can flex just enough to also include the one next to them. That's not a values argument — it's a design argument. You can hold it calmly.</p>
+            </div>
+        </div>
+
+        <div class="why-block">
+            <p class="why-q">Why "one student, one change, one tool" — why that specific format for the commitment?</p>
+            <div class="why-a">
+                <p>Most professional development ends with people feeling inspired and then returning to exactly what they were doing. The reason is usually not lack of motivation — it's lack of specificity. "I'll be more intentional about UDL" is not actionable. It has no trigger, no success condition, and no accountability.</p>
+                <p>"On Wednesday in second period with [name], I'm going to try giving them two different entry points into the lesson instead of one" is actionable. It has a who, a when, and a what. The structure (one student, one change, one tool) is designed to produce exactly that level of specificity. The note pushing for a name — "not a type of student, a person you know" — is the most important part of the whole Act 5 sequence.</p>
+            </div>
+        </div>
+
+        <div class="why-block">
+            <p class="why-q">What's the through-line? If you had to say what the whole day is actually about?</p>
+            <div class="why-a">
+                <p>The whole day is about the gap between designing for <strong>a student</strong> and designing for <strong>this student.</strong></p>
+                <p>You start with a generic lesson. The personas make it specific. The hackathon forces embodied thinking about real people. The philosophy reveals what assumptions were hiding in that thinking. The commitment makes it land in a real classroom, with a real name.</p>
+                <p>You're not trying to change everyone's practice in a day. You're trying to create one moment of genuine recognition for each person in the room — the moment where they see a specific student in a different light. If 60 of the 80 people leave with one name in their head and one concrete thing to try, that's a successful day.</p>
+            </div>
+        </div>
+
+        <div class="through-line">
+            <p class="through-line-label">/// The position you're holding all day</p>
+            <p class="through-line-text">Structured teaching and universal design are not opposites. TEACCH gives us predictability, reduced cognitive load, and clear task sequences — all of which matter enormously for autistic learners. UDL asks: <strong>who is the structure still excluding?</strong> Can we design it so that one more student can get in? That's not a threat to what these teachers already do. It's an extension of it. You're not asking them to change — you're asking them to flex.</p>
+        </div>
+
+    </div>
+
+    <p class="footer">/// THE UNIVERSAL SANDPIT — ASPECT HUNTER SCHOOL — APRIL 2026 ///</p>
+
+</div>
+
+<script>
+    function switchTab(id, btn) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('panel-' + id).classList.add('active');
+        btn.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

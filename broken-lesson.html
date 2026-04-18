@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Broken Lesson — Act 1 Artefact</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --snes-yellow: #e8c547;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --text-dark: #2a2a3a;
+            --text-mid: #5a5a6a;
+            --text-light: #8a8a9a;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(144, 144, 192, 0.3);
+            --glass-shadow: rgba(107, 107, 157, 0.15);
+            --page-bg: #f6f6fb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 8%, rgba(144,144,192,0.18) 0%, transparent 50%),
+                radial-gradient(circle at 90% 85%, rgba(90,126,194,0.12) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 56px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Back link --- */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender-deep);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-bottom: 40px;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.7; }
+
+        /* --- Context banner --- */
+        .context-banner {
+            background: rgba(107,107,157,0.08);
+            border: 1px solid rgba(144,144,192,0.25);
+            border-left: 3px solid var(--lavender-deep);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 40px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .banner-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--lavender-deep);
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .banner-text {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        .banner-text strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* --- Worksheet shell --- */
+        .worksheet {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(200,200,220,0.6);
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.06),
+                0 12px 40px var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        /* school header strip */
+        .ws-school-header {
+            background: #2a2a3a;
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .ws-school-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .ws-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+            text-align: right;
+        }
+
+        /* lesson header */
+        .ws-lesson-header {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid #eeeef4;
+        }
+
+        .ws-kla {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .ws-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .ws-admin-row {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .ws-admin-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ws-admin-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        .ws-admin-line {
+            width: 160px;
+            height: 1px;
+            background: #c0c0d0;
+        }
+
+        /* section */
+        .ws-section {
+            padding: 22px 28px;
+            border-bottom: 1px solid #eeeef4;
+        }
+
+        .ws-section:last-child { border-bottom: none; }
+
+        .ws-section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--lavender-deep);
+            margin-bottom: 12px;
+        }
+
+        /* objectives box */
+        .ws-objectives {
+            background: #f8f8fc;
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ws-obj-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.5;
+        }
+
+        .ws-obj-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+
+        /* passage */
+        .ws-passage {
+            background: #f8f8fc;
+            border-radius: 8px;
+            padding: 18px 20px;
+            font-size: 13.5px;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .ws-passage p + p { margin-top: 12px; }
+
+        /* instructions */
+        .ws-instructions {
+            background: #2a2a3a;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-bottom: 18px;
+        }
+
+        .ws-instructions p {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,0.85);
+            letter-spacing: 0.5px;
+            line-height: 1.6;
+        }
+
+        /* numbered tasks */
+        .ws-tasks {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ws-task {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .ws-task-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            background: var(--text-dark);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .ws-task-body {
+            flex: 1;
+        }
+
+        .ws-task-q {
+            font-size: 13.5px;
+            color: var(--text-dark);
+            line-height: 1.5;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .ws-answer-lines {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ws-line {
+            width: 100%;
+            height: 1px;
+            background: #c8c8d8;
+        }
+
+        /* FINISH box */
+        .ws-finish {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f0f0f8;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-top: 24px;
+        }
+
+        .finish-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-dark);
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .ws-finish p {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-mid);
+        }
+
+        /* --- Optional tools section --- */
+        .tools-note {
+            margin-top: 36px;
+            padding: 20px 24px;
+            background: rgba(90,185,122,0.07);
+            border: 1px solid rgba(90,185,122,0.2);
+            border-radius: 12px;
+        }
+
+        .tools-note-header {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--snes-green);
+            margin-bottom: 8px;
+        }
+
+        .tools-note p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+        }
+
+        .tools-note strong {
+            color: var(--text-dark);
+        }
+
+        /* --- UDL Bias Scanner prompt --- */
+        .scanner-prompt {
+            margin-top: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            padding: 20px 24px;
+        }
+
+        .scanner-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .scanner-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--lavender-deep);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .scanner-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--lavender-deep);
+            letter-spacing: 1px;
+        }
+
+        .scanner-prompt p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin-bottom: 12px;
+        }
+
+        .scanner-questions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .scanner-q {
+            display: flex;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.5;
+        }
+
+        .scanner-q::before {
+            content: "→";
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--lavender);
+            flex-shrink: 0;
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--lavender-deep);
+            text-decoration: none;
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            padding: 8px 14px;
+            background: rgba(144,144,192,0.06);
+            transition: all 0.2s;
+        }
+
+        .tool-link:hover {
+            background: rgba(144,144,192,0.14);
+            border-color: var(--lavender);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="aspect-session-overview.html" class="back-link">← Back to session overview</a>
+
+    <!-- Context Banner -->
+    <div class="context-banner">
+        <span class="banner-tag">Act 1 Artefact</span>
+        <p class="banner-text">
+            This is <strong>The Broken Lesson</strong> — the shared starting point for the session. It's not a bad lesson made by a bad teacher. It's a recognisable, structured, well-intentioned task that carries the design assumptions we're here to examine. Read it as you would if you'd just picked it up in a staffroom. Then we'll look at it together.
+        </p>
+    </div>
+
+    <!-- The Worksheet -->
+    <div class="worksheet">
+
+        <!-- School header -->
+        <div class="ws-school-header">
+            <span class="ws-school-name">Aspect Hunter School</span>
+            <div class="ws-meta">
+                <div>Science — Living World</div>
+                <div>Stage 2</div>
+            </div>
+        </div>
+
+        <!-- Lesson title + admin -->
+        <div class="ws-lesson-header">
+            <p class="ws-kla">Science — Biological Sciences</p>
+            <h1 class="ws-title">Living and Non-Living Things</h1>
+            <div class="ws-admin-row">
+                <div class="ws-admin-field">
+                    <span class="ws-admin-label">Name</span>
+                    <div class="ws-admin-line"></div>
+                </div>
+                <div class="ws-admin-field">
+                    <span class="ws-admin-label">Class</span>
+                    <div class="ws-admin-line" style="width:100px"></div>
+                </div>
+                <div class="ws-admin-field">
+                    <span class="ws-admin-label">Date</span>
+                    <div class="ws-admin-line" style="width:120px"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Objectives -->
+        <div class="ws-section">
+            <p class="ws-section-title">Learning Intentions</p>
+            <div class="ws-objectives">
+                <div class="ws-obj-row">
+                    <span class="ws-obj-label">I am learning to</span>
+                    <span>identify the characteristics of living things and distinguish them from non-living things.</span>
+                </div>
+                <div class="ws-obj-row">
+                    <span class="ws-obj-label">I will know I can do this when</span>
+                    <span>I can list three characteristics of living things and correctly sort examples into each category.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading passage -->
+        <div class="ws-section">
+            <p class="ws-section-title">Read This Passage</p>
+            <div class="ws-passage">
+                <p>Living things are organisms that are alive. All living things share several important characteristics that set them apart from non-living things.</p>
+                <p>First, living things grow and develop over time. A seed grows into a plant. A baby grows into an adult. Second, living things need food and water to survive and to get energy. Third, living things can reproduce — this means they are able to make more of themselves. A dog can have puppies. A flower can produce seeds. Fourth, living things respond to changes in their environment. A plant grows towards light. An animal runs away from danger.</p>
+                <p>Non-living things do not have these characteristics. A rock is non-living because it does not grow, eat, or reproduce. A car is also non-living. Even though it moves and uses fuel, it was not born and cannot make more cars by itself.</p>
+            </div>
+        </div>
+
+        <!-- Tasks -->
+        <div class="ws-section">
+            <p class="ws-section-title">Your Task</p>
+
+            <div class="ws-instructions">
+                <p>Step 1 — Read the passage above carefully.<br>
+                Step 2 — Answer all four questions below in full sentences.<br>
+                Step 3 — Check your work when you are finished.<br>
+                Step 4 — Tick the FINISHED box at the bottom of the page.</p>
+            </div>
+
+            <div class="ws-tasks">
+
+                <div class="ws-task">
+                    <div class="ws-task-num">1</div>
+                    <div class="ws-task-body">
+                        <p class="ws-task-q">Write <strong>three characteristics</strong> of living things in your own words.</p>
+                        <div class="ws-answer-lines">
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ws-task">
+                    <div class="ws-task-num">2</div>
+                    <div class="ws-task-body">
+                        <p class="ws-task-q">Is a car <strong>living or non-living</strong>? Write your answer and explain why using evidence from the passage.</p>
+                        <div class="ws-answer-lines">
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ws-task">
+                    <div class="ws-task-num">3</div>
+                    <div class="ws-task-body">
+                        <p class="ws-task-q">Give <strong>two examples of living things</strong> and <strong>two examples of non-living things</strong> that are not mentioned in the passage.</p>
+                        <div class="ws-answer-lines">
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ws-task">
+                    <div class="ws-task-num">4</div>
+                    <div class="ws-task-body">
+                        <p class="ws-task-q">In your own words, explain what it means for a living thing to <strong>reproduce</strong>.</p>
+                        <div class="ws-answer-lines">
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                            <div class="ws-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="ws-finish">
+                <div class="finish-box"></div>
+                <p>Finished — show your teacher</p>
+            </div>
+        </div>
+
+    </div><!-- /worksheet -->
+
+    <!-- Optional tools note -->
+    <div class="tools-note">
+        <p class="tools-note-header">/// A note on tools</p>
+        <p>The Universal Sandpit tools are <strong>available to support your thinking</strong> throughout this session — but they are entirely optional. If you'd prefer to work with pen and paper, conversation, or your own methods, that's completely fine. The tools are there if they're useful to you, not because they're required.</p>
+    </div>
+
+    <!-- UDL Bias Scanner prompt -->
+    <div class="scanner-prompt">
+        <div class="scanner-header">
+            <span class="scanner-pill">Act 1 Activity</span>
+            <span class="scanner-title">Using the UDL Bias Scanner on this lesson</span>
+        </div>
+        <p>Read through the lesson above. Then use the Bias Scanner — individually or with a partner — to examine what assumptions are built into its design. You don't need to fix anything yet. Just notice what you find.</p>
+        <p>As you work through it, consider:</p>
+        <div class="scanner-questions">
+            <div class="scanner-q">Who is this lesson designed for? Who does it assume will be in the room?</div>
+            <div class="scanner-q">What does a student need to already be able to do in order to access this lesson?</div>
+            <div class="scanner-q">How many ways are there to enter this task? To show understanding?</div>
+            <div class="scanner-q">Which of your students could complete this lesson as written — and which couldn't?</div>
+        </div>
+        <a href="https://tools.theuniversalsandpit.org/human-variability" target="_blank" class="tool-link">
+            → Open UDL Bias Scanner (optional)
+        </a>
+    </div>
+
+    <p class="footer">/// THE UNIVERSAL SANDPIT — ASPECT HUNTER SCHOOL — APRIL 2026 ///</p>
+
+</div>
+
+</body>
+</html>

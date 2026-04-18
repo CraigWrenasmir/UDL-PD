@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Act 1 — The Mirror — Aspect Hunter School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --snes-yellow: #e8c547;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --text-dark: #2a2a3a;
+            --text-mid: #5a5a6a;
+            --text-light: #8a8a9a;
+            --glass-bg: rgba(255,255,255,0.85);
+            --glass-border: rgba(144,144,192,0.3);
+            --glass-shadow: rgba(107,107,157,0.15);
+            --page-bg: #f6f6fb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 8%, rgba(144,144,192,0.18) 0%, transparent 50%),
+                radial-gradient(circle at 90% 85%, rgba(90,126,194,0.12) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 52px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender-deep);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-bottom: 40px;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.65; }
+
+        /* --- Page header --- */
+        .page-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--lavender-deep);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .page-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1.2rem, 3.5vw, 1.65rem);
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .page-intro {
+            max-width: 640px;
+            margin: 0 auto 48px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text-mid);
+        }
+
+        .page-intro strong { color: var(--text-dark); font-weight: 600; }
+
+        /* --- Lesson intention card --- */
+        .lesson-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px var(--glass-shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .lesson-card-header {
+            background: var(--text-dark);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .lesson-card-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .lesson-kla {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .lesson-card-body {
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 580px) { .lesson-card-body { grid-template-columns: 1fr; } }
+
+        .lesson-field {
+            background: rgba(144,144,192,0.06);
+            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1px solid rgba(144,144,192,0.1);
+        }
+
+        .lesson-field-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--lavender-deep);
+            margin-bottom: 6px;
+        }
+
+        .lesson-field-text {
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        .lesson-field-text strong { color: var(--text-dark); font-weight: 600; }
+
+        .lesson-field.full { grid-column: 1 / -1; }
+
+        /* --- Scope bar --- */
+        .scope-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px var(--glass-shadow);
+            padding: 22px 24px;
+            margin-bottom: 40px;
+        }
+
+        .scope-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--lavender-deep);
+            margin-bottom: 14px;
+        }
+
+        .scope-bar {
+            display: flex;
+            align-items: stretch;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 12px;
+        }
+
+        .scope-seg {
+            flex: 1;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .scope-seg + .scope-seg {
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .scope-seg-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        .scope-seg-desc {
+            font-size: 12.5px;
+            color: var(--text-mid);
+            line-height: 1.55;
+        }
+
+        .scope-seg-1 { background: rgba(90,126,194,0.06); }
+        .scope-seg-2 { background: rgba(90,185,122,0.06); }
+        .scope-seg-3 { background: rgba(107,107,157,0.06); }
+
+        .scope-note {
+            font-size: 12.5px;
+            color: var(--text-light);
+            font-style: italic;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* --- Section divider --- */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 44px 0 28px;
+        }
+
+        .section-divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .section-divider-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--lavender-deep);
+            white-space: nowrap;
+        }
+
+        /* --- UDL principle cards --- */
+        .udl-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .udl-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px var(--glass-shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .udl-card::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            border-radius: 16px 0 0 16px;
+        }
+
+        .card-engagement::before { background: var(--lavender-deep); }
+        .card-representation::before { background: var(--snes-blue); }
+        .card-expression::before { background: var(--snes-green); }
+
+        .udl-card-header {
+            padding: 18px 24px 16px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .udl-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #fff;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .pill-engagement    { background: var(--lavender-deep); }
+        .pill-representation { background: var(--snes-blue); }
+        .pill-expression    { background: var(--snes-green); }
+
+        .udl-header-text {}
+
+        .udl-principle {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .udl-principle-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* --- UDL principle redesign --- */
+
+        .udl-card-body {
+            padding: 0;
+        }
+
+        /* chips row */
+        .chips-section {
+            padding: 20px 24px 0;
+        }
+
+        .chips-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            font-size: 12.5px;
+            color: var(--text-mid);
+            background: rgba(144,144,192,0.09);
+            border: 1px solid rgba(144,144,192,0.18);
+            border-radius: 20px;
+            padding: 5px 13px;
+            line-height: 1.4;
+        }
+
+        /* questions */
+        .questions-section {
+            padding: 20px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .questions-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+
+        .big-question {
+            padding: 14px 0;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .big-question:last-child {
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .big-question::before {
+            content: "—";
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-light);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .card-engagement  .big-question::before { color: var(--lavender); }
+        .card-representation .big-question::before { color: var(--snes-blue); }
+        .card-expression  .big-question::before { color: var(--snes-green); }
+
+        .big-question p {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            font-weight: 500;
+            color: var(--text-dark);
+            line-height: 1.55;
+        }
+
+        .divider-line {
+            height: 1px;
+            background: var(--glass-border);
+            margin: 0 24px;
+        }
+
+        /* --- Closing reflection --- */
+        .reflection {
+            margin-top: 44px;
+            background: var(--text-dark);
+            border-radius: 16px;
+            padding: 32px 28px;
+            text-align: center;
+        }
+
+        .reflection-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 14px;
+        }
+
+        .reflection-q {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.45;
+            margin-bottom: 14px;
+        }
+
+        .reflection-note {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.65;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* --- Optional tools note --- */
+        .tools-note {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: rgba(90,185,122,0.07);
+            border: 1px solid rgba(90,185,122,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .tools-note-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--snes-green);
+            padding: 3px 9px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tools-note p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+        }
+
+        .tools-note strong { color: var(--text-dark); }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="aspect-session-overview.html" class="back-link">← Back to session overview</a>
+
+    <!-- Page header -->
+    <p class="page-label">Act 1 — The Mirror</p>
+    <h1 class="page-title">Living and Non-Living Things</h1>
+    <p class="page-intro">
+        This is today's shared lesson — a starting point, not a finished design. Read through it, then your table will work through the questions below together. Start from your own practice. The thinking emerges from there.
+    </p>
+
+    <!-- Lesson intention -->
+    <div class="lesson-card">
+        <div class="lesson-card-header">
+            <span class="lesson-card-title">Lesson Intention</span>
+            <span class="lesson-kla">Science — Biological Sciences</span>
+        </div>
+        <div class="lesson-card-body">
+            <div class="lesson-field full">
+                <p class="lesson-field-label">Learning Outcome</p>
+                <p class="lesson-field-text">Students will <strong>distinguish between living and non-living things</strong> — identifying what makes something alive, sorting examples, and explaining their reasoning in whatever way best demonstrates their understanding.</p>
+            </div>
+            <div class="lesson-field">
+                <p class="lesson-field-label">Year Level</p>
+                <p class="lesson-field-text">This outcome applies to students across all years — the depth of thinking scales with the learner, not the lesson design.</p>
+            </div>
+            <div class="lesson-field">
+                <p class="lesson-field-label">How it typically looks</p>
+                <p class="lesson-field-text">Visuals on the table — symbols, photographs, or line art cut out as sorting cards. Students physically sort them into <em>living</em> and <em>non-living</em> categories using a template or labelled spaces. Clear, structured, predictable — and genuinely good autism teaching.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scope bar -->
+
+<!-- Activity sequence -->
+    <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-label">/// Table Activity</span>
+        <div class="section-divider-line"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:36px;">
+        <div style="display:flex;align-items:baseline;gap:14px;background:rgba(144,144,192,0.07);border-radius:10px;padding:14px 18px;border:1px solid rgba(144,144,192,0.12);">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--lavender-deep);font-weight:700;flex-shrink:0;">01</span>
+            <div><p style="font-size:14px;color:var(--text-dark);font-weight:600;margin:0 0 3px;"><strong>Draft your approach at the table.</strong></p><p style="font-size:13px;color:var(--text-mid);margin:0;">What would this lesson actually look like in your classroom?</p></div>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-light);margin-left:auto;white-space:nowrap;">5 min</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:14px;background:rgba(144,144,192,0.07);border-radius:10px;padding:14px 18px;border:1px solid rgba(144,144,192,0.12);">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--lavender-deep);font-weight:700;flex-shrink:0;">02</span>
+            <div><p style="font-size:14px;color:var(--text-dark);font-weight:600;margin:0 0 3px;"><strong>Who does this design serve well?</strong></p><p style="font-size:13px;color:var(--text-mid);margin:0;">Which student in your class would thrive in what you just described?</p></div>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-light);margin-left:auto;white-space:nowrap;">2 min</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:14px;background:rgba(144,144,192,0.07);border-radius:10px;padding:14px 18px;border:1px solid rgba(144,144,192,0.12);">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--lavender-deep);font-weight:700;flex-shrink:0;">03</span>
+            <div><p style="font-size:14px;color:var(--text-dark);font-weight:600;margin:0 0 3px;"><strong>Who might get stuck?</strong></p><p style="font-size:13px;color:var(--text-mid);margin:0;">Who is at the edges of what this design currently reaches — and where does it get hard for them?</p></div>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-light);margin-left:auto;white-space:nowrap;">3 min</span>
+        </div>
+    </div>
+
+<!-- UDL thinking section header -->
+    <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-label">/// UDL Thinking</span>
+        <div class="section-divider-line"></div>
+    </div>
+
+    <div class="udl-cards">
+
+        <!-- ENGAGEMENT -->
+        <div class="udl-card card-engagement">
+            <div class="udl-card-header">
+                <div class="udl-header-text">
+                    <p class="udl-principle">UDL Principle 1</p>
+                    <h2 class="udl-principle-title">Engagement — How are students invited into this learning?</h2>
+                </div>
+                <span class="udl-pill pill-engagement">Engagement</span>
+            </div>
+            <div class="udl-card-body">
+                <div class="chips-section">
+                    <p class="chips-label">What this lesson might already include</p>
+                    <div class="chips">
+                        <span class="chip">Visual sorting cards</span>
+                        <span class="chip">Symbols, photos or line art</span>
+                        <span class="chip">Clear task steps</span>
+                        <span class="chip">Teacher modelling</span>
+                        <span class="chip">Predictable routine</span>
+                        <span class="chip">Defined start and finish</span>
+                    </div>
+                </div>
+                <div class="divider-line" style="margin-top:20px;"></div>
+                <div class="questions-section">
+                    <p class="questions-label">Questions to sit with</p>
+                    <div class="big-question"><p>Is there only one way to enter this learning — or are there several different doors in?</p></div>
+                    <div class="big-question"><p>Which of your students wouldn't reach this at all, as it's currently designed?</p></div>
+                    <div class="big-question"><p>Does every student need to start the same way, at the same time, with the same stimulus?</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REPRESENTATION -->
+        <div class="udl-card card-representation">
+            <div class="udl-card-header">
+                <div class="udl-header-text">
+                    <p class="udl-principle">UDL Principle 2</p>
+                    <h2 class="udl-principle-title">Representation — How many ways can students access the content?</h2>
+                </div>
+                <span class="udl-pill pill-representation">Representation</span>
+            </div>
+            <div class="udl-card-body">
+                <div class="chips-section">
+                    <p class="chips-label">What this lesson might already include</p>
+                    <div class="chips">
+                        <span class="chip">Photograph sorting cards</span>
+                        <span class="chip">Physical manipulation</span>
+                        <span class="chip">Two clear categories</span>
+                        <span class="chip">Teacher-made materials</span>
+                        <span class="chip">Visual labels</span>
+                    </div>
+                </div>
+                <div class="divider-line" style="margin-top:20px;"></div>
+                <div class="questions-section">
+                    <p class="questions-label">Questions to sit with</p>
+                    <div class="big-question"><p>If a student can't read the label on a sorting card, can they still access the concept?</p></div>
+                    <div class="big-question"><p>Is the visual support the only way in — or is it one of several?</p></div>
+                    <div class="big-question"><p>What if a student needs to move, touch, or hear something to understand it?</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPRESSION -->
+        <div class="udl-card card-expression">
+            <div class="udl-card-header">
+                <div class="udl-header-text">
+                    <p class="udl-principle">UDL Principle 3</p>
+                    <h2 class="udl-principle-title">Expression — How can students show what they know?</h2>
+                </div>
+                <span class="udl-pill pill-expression">Expression</span>
+            </div>
+            <div class="udl-card-body">
+                <div class="chips-section">
+                    <p class="chips-label">What this lesson might already include</p>
+                    <div class="chips">
+                        <span class="chip">Completed sorting template</span>
+                        <span class="chip">Teacher observation</span>
+                        <span class="chip">Written labels or sentences</span>
+                        <span class="chip">Tick or cross marking</span>
+                    </div>
+                </div>
+                <div class="divider-line" style="margin-top:20px;"></div>
+                <div class="questions-section">
+                    <p class="questions-label">Questions to sit with</p>
+                    <div class="big-question"><p>Does writing this down prove they understand it — or does it prove they can write?</p></div>
+                    <div class="big-question"><p>What does "knowing" look like for your most complex student?</p></div>
+                    <div class="big-question"><p>Are you assessing the learning — or the format of the response?</p></div>
+                    <div class="big-question"><p>Could a student who uses one switch still show you genuine understanding?</p></div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /udl-cards -->
+
+    <!-- Optional tools note -->
+    <div class="tools-note" style="margin-top: 36px;">
+        <span class="tools-note-tag">Optional</span>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <p>The Universal Sandpit tools are available to support your thinking if they're useful. The <a href="https://tools.theuniversalsandpit.org/bias-scanner" target="_blank" rel="noopener noreferrer" style="color: var(--snes-green); text-decoration: underline; text-decoration-style: dotted;">UDL Bias Scanner</a> is a good place to start — it surfaces assumptions built into a lesson's design. Work with it in whatever way suits you and your team.</p>
+            <a href="https://tools.theuniversalsandpit.org/bias-scanner" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; align-self:flex-start; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#fff; background:var(--snes-green); border-radius:8px; padding:10px 18px; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">→ Open UDL Bias Scanner</a>
+        </div>
+    </div>
+
+    <!-- Closing reflection -->
+    <div class="reflection">
+        <p class="reflection-label">/// Before we move on</p>
+        <p class="reflection-q">"Which student are you thinking about right now?"</p>
+        <p class="reflection-note">Hold that student in mind as we move into Act 2. Every design decision we make today is for someone real. Start with them.</p>
+    </div>
+
+    <p class="footer">/// THE UNIVERSAL SANDPIT — ASPECT HUNTER SCHOOL — APRIL 2026 ///</p>
+
+</div>
+
+</body>
+</html>

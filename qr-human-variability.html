@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QR Code — Human Variability</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f6f6fb;
+    font-family: 'Space Mono', monospace;
+    gap: 1.5rem;
+  }
+  #qr-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(42,42,58,0.12);
+    line-height: 0;
+  }
+  #qr-wrap img, #qr-wrap canvas { display: block; }
+  p {
+    font-size: 0.75rem;
+    color: #5a5a6a;
+    margin: 0;
+    text-align: center;
+  }
+  button {
+    padding: 0.7rem 1.6rem;
+    background: #6b6b9d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #9090c0; }
+</style>
+</head>
+<body>
+<div id="qr-wrap"></div>
+<p>tools.theuniversalsandpit.org/human-variability</p>
+<button onclick="download()">Download PNG</button>
+<script>
+  var qr = new QRCode(document.getElementById('qr-wrap'), {
+    text: 'https://tools.theuniversalsandpit.org/human-variability',
+    width: 400,
+    height: 400,
+    colorDark: '#2a2a3a',
+    colorLight: '#f6f6fb',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  function download() {
+    var canvas = document.querySelector('#qr-wrap canvas');
+    if (canvas) {
+      var a = document.createElement('a');
+      a.download = 'qr-human-variability.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    } else {
+      var img = document.querySelector('#qr-wrap img');
+      if (img) {
+        var a = document.createElement('a');
+        a.download = 'qr-human-variability.png';
+        a.href = img.src;
+        a.click();
+      }
+    }
+  }
+</script>
+</body>
+</html>
