@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UDL Professional Learning — Aspect Hunter School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            color-scheme: light;
+            --lavender: #9090c0;
+            --lavender-deep: #6b6b9d;
+            --snes-red: #d64a4a;
+            --snes-yellow: #e8c547;
+            --snes-green: #5ab97a;
+            --snes-blue: #5a7ec2;
+            --text-dark: #2a2a3a;
+            --text-mid: #5a5a6a;
+            --text-light: #8a8a9a;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(144, 144, 192, 0.3);
+            --glass-shadow: rgba(107, 107, 157, 0.15);
+            --page-bg: #f6f6fb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 8%, rgba(144,144,192,0.18) 0%, transparent 50%),
+                radial-gradient(circle at 90% 85%, rgba(90,126,194,0.12) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 64px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Page Header --- */
+        .page-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--lavender-deep);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .page-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--lavender);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .page-intro {
+            max-width: 640px;
+            margin: 0 auto 52px;
+            text-align: center;
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: var(--text-mid);
+        }
+
+        .page-intro strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* --- Timeline Bar --- */
+        .timeline-wrapper {
+            margin-bottom: 56px;
+        }
+
+        .timeline-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender-deep);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .timeline {
+            display: flex;
+            align-items: stretch;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px var(--glass-shadow);
+            height: 72px;
+        }
+
+        .tl-seg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 8px 6px;
+            cursor: default;
+            transition: filter 0.2s;
+        }
+
+        .tl-seg:hover { filter: brightness(1.06); }
+
+        .tl-seg-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.95);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .tl-seg-time {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            color: rgba(255,255,255,0.75);
+            text-align: center;
+        }
+
+        .tl-pre   { background: #4a6880;              flex: 1.5; }
+        .tl-act1  { background: var(--lavender-deep); flex: 3; }
+        .tl-act2  { background: var(--snes-blue);     flex: 4; }
+        .tl-break { background: #b0b0c8;              flex: 2; }
+        .tl-act3  { background: var(--snes-green);    flex: 5; }
+        .tl-act4  { background: var(--snes-red);      flex: 2.5; }
+        .tl-act5  { background: #c8a830;              flex: 3.5; }
+
+        /* --- Act Cards --- */
+        .acts {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .act-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px var(--glass-shadow);
+            overflow: hidden;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        .act-card:hover {
+            box-shadow: 0 8px 36px rgba(107,107,157,0.22);
+            transform: translateY(-2px);
+        }
+
+        .act-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px 18px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .act-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: #fff;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .pill-lavender { background: var(--lavender-deep); }
+        .pill-blue     { background: var(--snes-blue); }
+        .pill-green    { background: var(--snes-green); }
+        .pill-red      { background: var(--snes-red); }
+        .pill-yellow   { background: #c8a830; }
+
+        .act-header-text { flex: 1; }
+
+        .act-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .act-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .act-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .act-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-mid);
+            white-space: nowrap;
+        }
+
+        .act-mode {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--text-light);
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        .act-body {
+            padding: 22px 28px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .act-activities {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activities-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: var(--lavender-deep);
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        .activity-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .dot-lavender { background: var(--lavender); }
+        .dot-blue     { background: var(--snes-blue); }
+        .dot-green    { background: var(--snes-green); }
+        .dot-red      { background: var(--snes-red); }
+        .dot-yellow   { background: #c8a830; }
+
+        /* sub-items for rounds */
+        .round-item {
+            background: rgba(144,144,192,0.07);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 2px;
+        }
+
+        .round-header {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .round-desc {
+            font-size: 14.5px;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        .round-constraint {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--snes-green);
+            background: rgba(90,185,122,0.1);
+            border: 1px solid rgba(90,185,122,0.25);
+            border-radius: 4px;
+            padding: 3px 9px;
+            margin-top: 7px;
+        }
+
+        .steal-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--snes-green);
+            padding: 6px 0;
+            font-style: italic;
+        }
+
+        .steal-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(90,185,122,0.3);
+        }
+
+        /* sidebar */
+        .act-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 190px;
+        }
+
+        .sidebar-block {
+            background: rgba(144,144,192,0.07);
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px solid rgba(144,144,192,0.12);
+        }
+
+        .sidebar-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: var(--lavender-deep);
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-tool {
+            font-size: 12.5px;
+            color: var(--text-mid);
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sidebar-tool::before {
+            content: "→";
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender);
+        }
+
+        .key-idea {
+            font-size: 12.5px;
+            color: var(--text-dark);
+            font-style: italic;
+            line-height: 1.55;
+        }
+
+        /* accent stripe on left of card */
+        .act-card { position: relative; }
+        .act-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 16px 0 0 16px;
+        }
+
+        .stripe-lavender::before { background: var(--lavender-deep); }
+        .stripe-blue::before     { background: var(--snes-blue); }
+        .stripe-green::before    { background: var(--snes-green); }
+        .stripe-red::before      { background: var(--snes-red); }
+        .stripe-yellow::before   { background: #c8a830; }
+
+        /* Break divider */
+        .break-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 24px;
+            background: rgba(176,176,200,0.18);
+            border-radius: 12px;
+            border: 1px solid rgba(176,176,200,0.3);
+        }
+
+        .break-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: #b0b0c8;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .break-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-light);
+            letter-spacing: 1px;
+        }
+
+        .break-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(176,176,200,0.4);
+        }
+
+        /* --- Design Notes --- */
+        .design-notes {
+            margin-top: 52px;
+            padding: 28px 32px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px var(--glass-shadow);
+        }
+
+        .notes-header {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--lavender-deep);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .note-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .note-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .note-body {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        /* footer */
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Page Header -->
+    <h1 class="page-title">UDL Professional Learning</h1>
+    <p class="page-subtitle">Session Architecture: Five-Act Structure</p>
+
+    <p class="page-intro" style="margin-bottom:12px;">
+        This is your reference for the day. Each act has a different mode and cognitive demand — moving from individual reflection, to collaborative analysis, to fast-paced redesign, to whole-room discussion, to personal commitment. The relationship between <strong>structured teaching and universal design</strong> is a thread running through everything. This is a thread that doesn't need resolution, only understanding and the permission to try new things.
+    </p>
+    <div style="text-align:center; margin-bottom:48px;">
+        <a href="https://theuniversalsandpit.org" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--lavender-deep); background:rgba(144,144,192,0.1); border:1px solid rgba(144,144,192,0.25); border-radius:20px; padding:7px 16px; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(144,144,192,0.18)'" onmouseout="this.style.background='rgba(144,144,192,0.1)'">↗ The Universal Sandpit</a>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-wrapper">
+        <p class="timeline-label">Session Flow — 10:00 AM to 1:30 PM</p>
+        <div class="timeline">
+            <div class="tl-seg tl-act1">
+                <span class="tl-seg-label">Act 1<br>The Mirror</span>
+                <span class="tl-seg-time">10:00–10:30</span>
+            </div>
+            <div class="tl-seg tl-act2">
+                <span class="tl-seg-label">Act 2<br>The Diagnosis</span>
+                <span class="tl-seg-time">10:30–11:10</span>
+            </div>
+            <div class="tl-seg tl-break">
+                <span class="tl-seg-label">Break</span>
+                <span class="tl-seg-time">11:10–11:30</span>
+            </div>
+            <div class="tl-seg tl-act3">
+                <span class="tl-seg-label">Act 3<br>The Rebuild</span>
+                <span class="tl-seg-time">11:30–12:20</span>
+            </div>
+            <div class="tl-seg tl-act4">
+                <span class="tl-seg-label">Act 4<br>The Confrontation</span>
+                <span class="tl-seg-time">12:20–12:45</span>
+            </div>
+            <div class="tl-seg tl-act5">
+                <span class="tl-seg-label">Act 5<br>Commit + Close</span>
+                <span class="tl-seg-time">1:00–1:30</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acts -->
+    <div class="acts">
+
+        <!-- PREFACE -->
+        <div class="act-card" style="border-left: 4px solid #4a6880;">
+            <div class="act-header" style="background: rgba(74,104,128,0.08);">
+                <span class="act-pill" style="background:#4a6880; font-family:'Space Mono',monospace; font-size:10px; color:#fff; padding:4px 10px; border-radius:20px; letter-spacing:0.05em;">Preface</span>
+                <div class="act-header-text">
+                    <p class="act-number">Before Act 1</p>
+                    <h2 class="act-title">Shared Language</h2>
+                </div>
+                <div class="act-meta">
+                    <span class="act-time">10:00 – 10:15</span>
+                    <span class="act-mode">15 minutes</span>
+                    <span class="act-mode">Presenter-led</span>
+                </div>
+            </div>
+            <div class="act-body">
+                <div class="act-activities">
+                    <p class="activities-label">Content</p>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#4a6880;"></span>
+                        <span><strong>Structured Teaching</strong> — what it is, where it comes from, the four elements (physical structure, schedules, work systems, task organisation)</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#4a6880;"></span>
+                        <span><strong>Universal Design for Learning</strong> — the architecture analogy, three principles (Engagement / Representation / Expression), the key mindset shift</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#4a6880;"></span>
+                        <span><strong>How they relate</strong> — what they share, where they diverge, why the tension is productive</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#4a6880;"></span>
+                        <span><em>Close with the synthesis statement — then move into Act 1 without resolving it.</em></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACT 1 -->
+        <div class="act-card stripe-lavender">
+            <div class="act-header">
+                <span class="act-pill pill-lavender">Act 1</span>
+                <div class="act-header-text">
+                    <p class="act-number">Opening</p>
+                    <h2 class="act-title">The Mirror &nbsp;<a href="the-lesson.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--lavender-deep);border:1px solid var(--glass-border);border-radius:4px;padding:2px 8px;text-decoration:none;white-space:nowrap;" target="_blank" rel="noopener noreferrer">→ The Lesson</a></h2>
+                </div>
+                <div class="act-meta">
+                    <span class="act-time">10:00 – 10:30</span>
+                    <span class="act-mode">30 minutes</span>
+                    <span class="act-mode">Individual → Whole Room</span>
+                </div>
+            </div>
+            <div class="act-body">
+                <div class="act-activities">
+                    <p class="activities-label">Activities</p>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-lavender"></span>
+                        <span>Let's work on a shared lesson — Living and Non-Living Things. Read it.</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-lavender"></span>
+                        <span><strong>Step 1:</strong> "How would you currently design this lesson for your students?" — table discussion, 5 min.</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-lavender"></span>
+                        <span><strong>Step 2:</strong> "Who does this design serve well?" — which students in your class would thrive in what you just described? 2 min.</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-lavender"></span>
+                        <span><strong>Step 3:</strong> "Who might find this harder?" — who is at the edges of what it reaches? 3 min.</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-lavender"></span>
+                        <span><strong>Step 4:</strong> Whole-room share — one observation per table. 5 min.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACT 2 -->
+        <div class="act-card stripe-blue">
+            <div class="act-header">
+                <span class="act-pill pill-blue">Act 2</span>
+                <div class="act-header-text">
+                    <p class="act-number">Table Teams</p>
+                    <h2 class="act-title">The Diagnosis &nbsp;<a href="student-personas.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--snes-blue);border:1px solid rgba(90,126,194,0.3);border-radius:4px;padding:2px 8px;text-decoration:none;white-space:nowrap;" target="_blank" rel="noopener noreferrer">→ The Students</a></h2>
+                </div>
+                <div class="act-meta">
+                    <span class="act-time">10:30 – 11:10</span>
+                    <span class="act-mode">40 minutes</span>
+                    <span class="act-mode">Table Teams</span>
+                </div>
+            </div>
+            <div class="act-body">
+                <div class="act-activities">
+                    <p class="activities-label">Three Rounds</p>
+
+                    <div class="round-item" style="background:rgba(90,126,194,0.07);border-left:3px solid var(--snes-blue);">
+                        <p class="round-header">Round 1 — The Stuck Moment (10 min)</p>
+                        <p class="round-desc">Your table takes one or two of the four students. Find the single moment in the lesson where that student gets stuck — a precise moment, a precise reason.</p>
+                        <span class="round-constraint" style="color:var(--snes-blue);background:rgba(90,126,194,0.1);border-color:rgba(90,126,194,0.25);">"Malcolm gets stuck here, because the lesson assumes he can..."</span>
+                    </div>
+
+                    <div class="round-item" style="background:rgba(90,126,194,0.07);border-left:3px solid var(--snes-blue);">
+                        <p class="round-header">Round 2 — The Assumption Hunt (10 min)</p>
+                        <p class="round-desc">Flip it. What assumption did the lesson designer make that caused the stuck moment? The critique stays on the design, not the student.</p>
+                        <span class="round-constraint" style="color:var(--snes-blue);background:rgba(90,126,194,0.1);border-color:rgba(90,126,194,0.25);">"This lesson was designed for a student who already knows how to..."</span>
+                    </div>
+
+                    <div class="round-item" style="background:rgba(90,126,194,0.07);border-left:3px solid var(--snes-blue);">
+                        <p class="round-header">Round 3 — The Pattern (10 min)</p>
+                        <p class="round-desc">Step back. What do the assumptions across all four students have in common? Is there one structural assumption causing multiple students to get stuck?</p>
+                        <span class="round-constraint" style="color:var(--snes-blue);background:rgba(90,126,194,0.1);border-color:rgba(90,126,194,0.25);">"Every student at our table gets stuck at the same moment — because the lesson assumes..."</span>
+                    </div>
+
+                    <div class="activity-item" style="margin-top:8px;">
+                        <span class="activity-dot dot-blue"></span>
+                        <span><strong>Share-back (10 min)</strong> — one pattern per table. The room builds a collective picture of how this lesson was considered and designed.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BREAK -->
+        <div class="break-card">
+            <span class="break-pill">Break</span>
+            <span class="break-text">20 minutes — 11:10 to 11:30</span>
+            <div class="break-line"></div>
+        </div>
+
+        <!-- ACT 3 -->
+        <div class="act-card stripe-green">
+            <div class="act-header">
+                <span class="act-pill pill-green">Act 3</span>
+                <div class="act-header-text">
+                    <p class="act-number">Hackathon with Constraints</p>
+                    <h2 class="act-title">The Rebuild</h2>
+                </div>
+                <div class="act-meta">
+                    <span class="act-time">11:30 – 12:20</span>
+                    <span class="act-mode">50 minutes</span>
+                    <span class="act-mode">Hackathon</span>
+                </div>
+            </div>
+            <div class="act-body">
+                <div class="act-activities">
+                    <p class="activities-label">Three Rounds</p>
+
+                    <div class="round-item">
+                        <p class="round-header">Round 1 — Engagement (15 min)</p>
+                        <p class="round-desc">Redesign how students enter the lesson — what draws them in, gives them a reason to start, and lowers the initial barrier for all four students.</p>
+                        <span class="round-constraint">Constraint: "Every student must have a way in."</span>
+                    </div>
+
+                    <div class="steal-badge">
+                        <div class="steal-line"></div>
+                        <span>2-minute steal → grab one idea from the table next to you</span>
+                        <div class="steal-line"></div>
+                    </div>
+
+                    <div class="round-item">
+                        <p class="round-header">Round 2 — Representation (15 min)</p>
+                        <p class="round-desc">Redesign how students access the content. What else could carry the concept when the current format doesn't work?</p>
+                        <span class="round-constraint">Constraint: "The content must reach every student."</span>
+                    </div>
+
+                    <div class="steal-badge">
+                        <div class="steal-line"></div>
+                        <span>2-minute steal → grab one idea from the table next to you</span>
+                        <div class="steal-line"></div>
+                    </div>
+
+                    <div class="round-item">
+                        <p class="round-header">Round 3 — Expression (15 min)</p>
+                        <p class="round-desc">Redesign how students show what they know. For each student, what does genuine evidence of understanding look like when the mode of demonstration is no longer the obstacle?</p>
+                        <span class="round-constraint">Constraint: "Every student must be able to show you what they know."</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACT 4 -->
+        <div class="act-card stripe-red">
+            <div class="act-header">
+                <span class="act-pill pill-red">Act 4</span>
+                <div class="act-header-text">
+                    <p class="act-number">Whole Room</p>
+                    <h2 class="act-title">The Confrontation</h2>
+                </div>
+                <div class="act-meta">
+                    <span class="act-time">12:20 – 12:45</span>
+                    <span class="act-mode">25 minutes</span>
+                    <span class="act-mode">Whole Room</span>
+                </div>
+            </div>
+            <div class="act-body">
+                <div class="act-activities">
+                    <p class="activities-label">Activities</p>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-red"></span>
+                        <span><strong>5 min — Presenter-led:</strong> The Structured Teaching / UDL tension rethought.</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-red"></span>
+                        <span><em>"Structured teaching honours what you know. UDL honours what you don't."</em></span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-red"></span>
+                        <span><strong>5 min — Table discussion:</strong> "How should we incorporate student voice into the co-design of our lessons?"</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-red"></span>
+                        <span><strong>8 min — Table reflection:</strong> Hold your redesign up against five audit questions. What assumptions did you bake in without noticing?</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot dot-red"></span>
+                        <span><strong>5 min — Whole-room share:</strong> One observation from the audit per table.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACT 5 -->
+        <div class="act-card stripe-yellow">
+            <div class="act-header">
+                <span class="act-pill pill-yellow">Act 5</span>
+                <div class="act-header-text">
+                    <p class="act-number">Individual → Room</p>
+                    <h2 class="act-title">Commit + Close</h2>
+                </div>
+                <div class="act-meta">
+                    <span class="act-time">1:00 – 1:30</span>
+                    <span class="act-mode">30 minutes (incl. buffer)</span>
+                    <span class="act-mode">Individual → Room</span>
+                </div>
+            </div>
+            <div class="act-body">
+                <div class="act-activities">
+                    <p class="activities-label">Activities</p>
+                    <div class="round-item" style="background:rgba(200,168,48,0.07);border-left:3px solid #c8a830;">
+                        <p class="round-header">Round 1 — Reflect (8 min)</p>
+                        <p class="round-desc">Individual (3 min) then table (5 min). Two prompts:</p>
+                        <p class="round-desc" style="margin-top:6px;font-style:italic;">"One thing today has made you question about the way you currently plan or support learning."</p>
+                        <p class="round-desc" style="margin-top:4px;font-style:italic;">"And one thing you'll do differently because of it."</p>
+                    </div>
+
+                    <div class="round-item" style="background:rgba(200,168,48,0.07);border-left:3px solid #c8a830;">
+                        <p class="round-header">Round 2 — The Question (8 min)</p>
+                        <p class="round-desc">Individual (3 min) then table (5 min). Distil your reflection into one question you'll ask yourself before every lesson plan. Your table helps you sharpen it.</p>
+                    </div>
+
+                    <div class="round-item" style="background:rgba(200,168,48,0.07);border-left:3px solid #c8a830;">
+                        <p class="round-header">Round 3 — Apply It (8 min)</p>
+                        <p class="round-desc">Individual. Use your question on a real lesson or session you're planning next week. What changes?</p>
+                    </div>
+
+                    <div class="activity-item" style="margin-top:8px;">
+                        <span class="activity-dot dot-yellow"></span>
+                        <span><strong>Whole-room share (4 min)</strong> — one question per table. The one you'll actually use.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /acts -->
+
+    <!-- Resources -->
+    <div style="max-width:900px; margin:40px auto 0; padding:0 24px;">
+        <p style="font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-mid); margin-bottom:16px;">/// Universal Sandpit Resources</p>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:40px;">
+            <a href="https://fieldnotes.theuniversalsandpit.org/udl-dashboard.html" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#fff; background:var(--snes-green); border-radius:8px; padding:11px 20px; text-decoration:none;">→ UDL Thinking Space</a>
+            <a href="https://tools.theuniversalsandpit.org/bias-scanner" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#fff; background:var(--lavender-deep); border-radius:8px; padding:11px 20px; text-decoration:none;">→ UDL Bias Scanner</a>
+            <a href="https://theuniversalsandpit.org" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--lavender-deep); background:rgba(144,144,192,0.1); border:1px solid rgba(144,144,192,0.25); border-radius:8px; padding:11px 20px; text-decoration:none;">↗ The Universal Sandpit</a>
+            <a href="presenter-slides.html" style="display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#fff; background:var(--text-dark); border-radius:8px; padding:11px 20px; text-decoration:none;">→ Presenter Slides</a>
+        </div>
+    </div>
+    <p class="footer">/// THE UNIVERSAL SANDPIT ///</p>
+
+</div>
+
+</body>
+</html>
