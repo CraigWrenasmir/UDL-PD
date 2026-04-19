@@ -623,6 +623,131 @@
         .timer-widget.t-urgent .t-ring-fill  { animation:tPulse 0.5s ease-in-out infinite alternate; }
         @keyframes tFlash { from{opacity:1} to{opacity:0.18} }
         @keyframes tPulse { from{stroke-width:7} to{stroke-width:11} }
+
+        /* ─── Mode Toggle Button ─── */
+        .mode-toggle {
+            position: fixed; top: 11px; left: 18px; z-index: 300;
+            font-family: 'Space Mono', monospace; font-size: 9px;
+            font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px; padding: 5px 13px;
+            cursor: pointer; transition: opacity 0.2s; user-select: none;
+        }
+        .mode-toggle:hover { opacity: 0.7; }
+
+        /* ─── Light Mode Overrides ─── */
+        body.light { background: #f0f0f8; }
+        body.light .slide { background: #f0f0f8 !important; }
+        body.light { --bg: #f0f0f8; --bg2: #f4f4f8; }
+
+        body.light .mode-toggle {
+            color: rgba(42,42,58,0.55);
+            background: rgba(42,42,58,0.06);
+            border-color: rgba(42,42,58,0.14);
+        }
+
+        /* Bright white text → dark */
+        body.light .mono-title,
+        body.light .welcome-title,
+        body.light .act-name,
+        body.light .overview-act-name,
+        body.light .lesson-title,
+        body.light .udl-col-title,
+        body.light .big-q,
+        body.light .task-big,
+        body.light .bridge-text,
+        body.light .steal-title-big,
+        body.light .hold-text,
+        body.light .tension-col-title,
+        body.light .constraint-text-big,
+        body.light .shareback-big,
+        body.light .closing-q,
+        body.light .p-name,
+        body.light .commit-title,
+        body.light .act-big-num { color: #2a2a3a !important; }
+
+        body.light .act-pill { color: #fff !important; }
+
+        /* Body text */
+        body.light .body-text,
+        body.light .lesson-body,
+        body.light .udl-col-q,
+        body.light .constraint-task,
+        body.light .steal-desc-big,
+        body.light .closing-note,
+        body.light .tension-list li,
+        body.light .audit-item p,
+        body.light .commit-q,
+        body.light .activity-card .step,
+        body.light .hold-sub { color: rgba(42,42,58,0.72) !important; }
+
+        /* Mid-opacity labels */
+        body.light .eyebrow,
+        body.light .overview-act-mode,
+        body.light .udl-col-label,
+        body.light .lesson-kla,
+        body.light .lesson-note,
+        body.light .act-timing,
+        body.light .welcome-sub,
+        body.light .step-num,
+        body.light .p-age,
+        body.light .break-back,
+        body.light .tension-col-eyebrow,
+        body.light .teacch-def,
+        body.light .flow-seg-time,
+        body.light .break-time-chip { color: rgba(42,42,58,0.5) !important; }
+
+        /* Low-opacity chrome text */
+        body.light .welcome-start,
+        body.light .closing-footer,
+        body.light .break-row-label { color: rgba(42,42,58,0.35) !important; }
+
+        body.light .slide-counter { color: rgba(42,42,58,0.3) !important; }
+        body.light .nav-hint { color: rgba(42,42,58,0.2) !important; }
+        body.light .break-big { color: rgba(42,42,58,0.08) !important; }
+
+        /* Overview */
+        body.light .overview-time { color: rgba(42,42,58,0.6) !important; }
+        body.light .overview-body { background: rgba(42,42,58,0.05) !important; }
+
+        /* Cards */
+        body.light .lesson-display,
+        body.light .activity-card,
+        body.light .tension-col,
+        body.light .commit-card { background: rgba(42,42,58,0.05) !important; border-color: rgba(42,42,58,0.09) !important; }
+
+        body.light .udl-col { background: rgba(42,42,58,0.05) !important; }
+
+        body.light .p-card { background: rgba(42,42,58,0.05) !important; border-color: rgba(42,42,58,0.09) !important; }
+        body.light .p-trait { color: rgba(42,42,58,0.65) !important; background: rgba(42,42,58,0.07) !important; }
+        body.light .p-desc { color: rgba(42,42,58,0.55) !important; }
+
+        body.light .steal-card { background: rgba(90,185,122,0.07) !important; }
+
+        body.light .task-note-block { color: rgba(42,42,58,0.65) !important; }
+
+        /* Borders & dividers */
+        body.light .lesson-note,
+        body.light .audit-item,
+        body.light .audit-item:last-child { border-color: rgba(42,42,58,0.09) !important; }
+        body.light .flow-row { border-color: rgba(42,42,58,0.1) !important; }
+        body.light .break-row-line { background: rgba(42,42,58,0.1) !important; }
+        body.light .activity-card .step { border-color: rgba(42,42,58,0.08) !important; }
+
+        /* Timer */
+        body.light .t-ring-track { stroke: rgba(42,42,58,0.12) !important; }
+        body.light .t-btn-start { border-color: rgba(42,42,58,0.25) !important; }
+        body.light .t-btn-reset { color: rgba(42,42,58,0.35) !important; border-color: rgba(42,42,58,0.12) !important; }
+
+        /* Glow overlays — reduced intensity in light */
+        body.light .glow-lavender::before { background: radial-gradient(circle at 50% 35%, rgba(107,107,157,0.07) 0%, transparent 65%) !important; }
+        body.light .glow-blue::before     { background: radial-gradient(circle at 50% 35%, rgba(90,126,194,0.07) 0%, transparent 65%) !important; }
+        body.light .glow-green::before    { background: radial-gradient(circle at 50% 35%, rgba(90,185,122,0.06) 0%, transparent 65%) !important; }
+        body.light .glow-red::before      { background: radial-gradient(circle at 50% 35%, rgba(214,74,74,0.06) 0%, transparent 65%) !important; }
+        body.light .glow-amber::before    { background: radial-gradient(circle at 50% 35%, rgba(200,168,48,0.06) 0%, transparent 65%) !important; }
+        body.light .glow-welcome::before  { background: radial-gradient(circle at 12% 18%, rgba(107,107,157,0.09) 0%, transparent 50%), radial-gradient(circle at 88% 78%, rgba(90,126,194,0.05) 0%, transparent 50%) !important; }
     </style>
 </head>
 <body>
@@ -1711,6 +1836,7 @@
 <div class="slide-counter" id="counter"></div>
 <div class="act-indicator" id="actLabel"></div>
 <div class="nav-hint">← → space &nbsp;·&nbsp; Enter start/pause &nbsp;·&nbsp; R reset &nbsp;·&nbsp; F fullscreen</div>
+<button class="mode-toggle" id="modeToggle" onclick="toggleMode()">◑ LIGHT</button>
 
 <div class="click-prev" onclick="prevSlide()" title="Previous"></div>
 <div class="click-next" onclick="nextSlide()" title="Next"></div>
@@ -1861,6 +1987,19 @@
         if (e.key === 'Home') { e.preventDefault(); showSlide(0); }
         if (e.key === 'End')  { e.preventDefault(); showSlide(total - 1); }
     });
+
+    // ─── Light/Dark Mode ────────────────────────────────────────────
+    function toggleMode() {
+        const isLight = document.body.classList.toggle('light');
+        document.getElementById('modeToggle').textContent = isLight ? '◐ DARK' : '◑ LIGHT';
+        localStorage.setItem('presenterMode', isLight ? 'light' : 'dark');
+    }
+    (function() {
+        if (localStorage.getItem('presenterMode') === 'light') {
+            document.body.classList.add('light');
+            document.getElementById('modeToggle').textContent = '◐ DARK';
+        }
+    })();
 
     // Initialise all timer widgets, then show first slide
     document.querySelectorAll('.timer-widget').forEach(w => timerInit(w));
